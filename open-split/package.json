@@ -52,6 +52,9 @@
     ],
     "*.{json,css,md}": [
       "prettier --write"
+    ],
+    "build": [
+      "vite build && tsc"
     ]
   }
 }
