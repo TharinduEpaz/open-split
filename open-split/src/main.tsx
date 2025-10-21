@@ -1,6 +1,12 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
+import '@fontsource/roboto/300.css'
+import '@fontsource/roboto/400.css'
+import '@fontsource/roboto/500.css'
+import '@fontsource/roboto/700.css'
+import { StyledEngineProvider } from '@mui/material/styles'
+import GlobalStyles from '@mui/material/GlobalStyles'
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
@@ -31,7 +37,11 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <StyledEngineProvider enableCssLayer>
+        <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
+        {/* Your app */}
+        <RouterProvider router={router} />
+      </StyledEngineProvider>
     </StrictMode>,
   )
 }

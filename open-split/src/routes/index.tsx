@@ -1,5 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
-import logo from '../logo.svg'
+import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
+import Stack from '@mui/material/Stack'
+import { HomeContainer } from './root-layout'
+import { FilledButton } from '../components/ui/common/filled-button'
+import { OutlinedButton } from '../components/ui/common/outlined-button'
+import { SplitTitle } from '../components/ui/common/split-title'
+import { SplitSubtitle } from '../components/ui/common/split-subtitle'
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -7,33 +14,34 @@ export const Route = createFileRoute('/')({
 
 function App() {
   return (
-    <div className="text-center">
-      <header className="min-h-screen flex flex-col items-center justify-center bg-[#282c34] text-white text-[calc(10px+2vmin)]">
-        <img
-          src={logo}
-          className="h-[40vmin] pointer-events-none animate-[spin_20s_linear_infinite]"
-          alt="logo"
-        />
-        <p>
-          Edit <code>src/routes/index.tsx</code> and save to reload.
-        </p>
-        <a
-          className="text-[#61dafb] hover:underline"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <a
-          className="text-[#61dafb] hover:underline"
-          href="https://tanstack.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn TanStack
-        </a>
-      </header>
-    </div>
+    <HomeContainer>
+      <Container maxWidth="lg">
+        <Box sx={{ textAlign: 'center' }}>
+          {/* Header Section */}
+          <Box sx={{ mb: 6 }}>
+            <SplitTitle>
+              Welcome to open split
+            </SplitTitle>
+            <SplitSubtitle>
+              Easily create fund splits with your friends
+            </SplitSubtitle>
+          </Box>
+
+          {/* Buttons Section */}
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={2}
+            sx={{ justifyContent: 'center' }}
+          >
+            <FilledButton>
+              Generate Split
+            </FilledButton>
+            <OutlinedButton>
+              View Recent Splits
+            </OutlinedButton>
+          </Stack>
+        </Box>
+      </Container>
+    </HomeContainer>
   )
 }
