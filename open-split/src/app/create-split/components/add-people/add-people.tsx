@@ -1,7 +1,7 @@
-import { SplitSubtitle } from '@/components/ui/common/split-subtitle'
 import { Avatar, Box, Card, IconButton, Stack } from '@mui/material'
 import { Trash2 } from 'lucide-react'
 import AddPeopleForm from './add-people-form'
+import { SplitSubtitle } from '@/components/ui/common/split-subtitle'
 
 interface Person {
   name: string
@@ -9,7 +9,7 @@ interface Person {
 }
 
 function AddPeople() {
-  const people: Person[] = [
+  const people: Array<Person> = [
     { name: 'Tharindu Epasingha', email: 'epazingha@gmail.com' },
     { name: 'John Doe', email: 'john@example.com' },
     { name: 'Jane Smith', email: 'jane@example.com' },
@@ -40,8 +40,8 @@ interface PeopleCardProps {
 
 function PeopleCard({ name, email }: PeopleCardProps) {
   // Get initials from name
-  const getInitials = (name: string) => {
-    return name
+  const getInitials = (fullName: string) => {
+    return fullName
       .split(' ')
       .map((word) => word[0])
       .join('')
