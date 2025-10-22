@@ -1,6 +1,6 @@
-import { Box, Button, FormHelperText, TextField } from '@mui/material'
+import { Box, FormHelperText, TextField } from '@mui/material'
 import { useForm } from '@tanstack/react-form'
-import { useCreateSplit } from '../state/use-create-split'
+import { useCreateSplit } from '../../state/use-create-split'
 import type { AnyFieldApi } from '@tanstack/react-form'
 
 function FieldInfo({ field }: { field: AnyFieldApi }) {
@@ -18,26 +18,26 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
   )
 }
 
-export default function App() {
+export default function AddPeopleForm() {
   const { setCreateSplitData } = useCreateSplit()
 
   const form = useForm({
     defaultValues: {
       firstName: '',
-      lastName: '',
+      email: '',
     },
     onSubmit: async ({ value }) => {
       // Save form data to Zustand store
       setCreateSplitData({
         firstName: value.firstName,
-        lastName: value.lastName,
+        email: value.email,
       })
       console.log('Data saved to store:', value)
     },
   })
 
   return (
-    <Box className="mt-12">
+    <Box className="mt-12 h-120" maxWidth={'400px'}>
       <form
         onSubmit={(e) => {
           e.preventDefault()
@@ -45,7 +45,7 @@ export default function App() {
           form.handleSubmit()
         }}
       >
-        <Box sx={{ mb: 2 }} className="mt-4 max-w-md">
+        <Box sx={{ mb: 2 }}>
           <form.Field
             name="firstName"
             validators={{
@@ -69,7 +69,7 @@ export default function App() {
                   <TextField
                     id="firstName"
                     label="First Name"
-                    variant="filled"
+                    variant="standard"
                     fullWidth
                     value={state.value}
                     onChange={(e) => handleChange(e.target.value)}
@@ -94,19 +94,19 @@ export default function App() {
         </Box>
         <Box sx={{ mb: 2 }}>
           <form.Field
-            name="lastName"
+            name="email"
             children={({ state, handleChange, handleBlur }) => (
               <Box>
                 <TextField
-                  id="lastName"
-                  label="Last Name"
-                  variant="filled"
+                  id="email"
+                  label="Email"
+                  variant="standard"
                   fullWidth
                   value={state.value}
                   onChange={(e) => handleChange(e.target.value)}
                   onBlur={handleBlur}
                   error={state.meta.isTouched && !state.meta.isValid}
-                  placeholder="Enter your last name"
+                  placeholder="Enter your email"
                 />
                 <FieldInfo
                   field={
@@ -114,7 +114,7 @@ export default function App() {
                       state,
                       handleChange,
                       handleBlur,
-                      name: 'lastName',
+                      name: 'email',
                     } as AnyFieldApi
                   }
                 />
@@ -122,19 +122,17 @@ export default function App() {
             )}
           />
         </Box>
-        <form.Subscribe
+        {/* <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
           children={([canSubmit, isSubmitting]) => (
-            <Button
+            <FilledButton
               type="submit"
-              variant="contained"
               disabled={!canSubmit}
-              fullWidth
             >
               {isSubmitting ? 'Submitting...' : 'Submit'}
-            </Button>
+            </FilledButton>
           )}
-        />
+        /> */}
       </form>
     </Box>
   )

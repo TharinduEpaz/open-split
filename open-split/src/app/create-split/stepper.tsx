@@ -1,11 +1,11 @@
-import * as React from 'react'
 import Box from '@mui/material/Box'
-import Stepper from '@mui/material/Stepper'
+import Button from '@mui/material/Button'
 import Step from '@mui/material/Step'
 import StepButton from '@mui/material/StepButton'
-import Button from '@mui/material/Button'
+import Stepper from '@mui/material/Stepper'
 import Typography from '@mui/material/Typography'
-import AddPeopleForm from './components/add-people-form'
+import * as React from 'react'
+import AddPeople from './components/add-people/add-people'
 import AddTaskForm from './components/add-task-form'
 import { GenerateLinkForm } from './components/generate-link-form'
 
@@ -67,7 +67,7 @@ export default function CreateSplitStepper() {
   function _renderStepContent(step: number) {
     switch (step) {
       case 0:
-        return <AddPeopleForm />
+        return <AddPeople />
       case 1:
         return <AddTaskForm />
       case 2:
