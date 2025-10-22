@@ -1,7 +1,9 @@
+import { FilledButton } from '@/components/ui/common/filled-button'
 import { Box, FormHelperText, TextField } from '@mui/material'
-import { useForm } from '@tanstack/react-form'
-import { useCreateSplit } from '../../state/use-create-split'
 import type { AnyFieldApi } from '@tanstack/react-form'
+import { useForm } from '@tanstack/react-form'
+import { PlusIcon } from 'lucide-react'
+import { useCreateSplit } from '../../state/use-create-split'
 
 function FieldInfo({ field }: { field: AnyFieldApi }) {
   return (
@@ -122,17 +124,18 @@ export default function AddPeopleForm() {
             )}
           />
         </Box>
-        {/* <form.Subscribe
+        <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
           children={([canSubmit, isSubmitting]) => (
             <FilledButton
               type="submit"
               disabled={!canSubmit}
+              startIcon={<PlusIcon />}
             >
-              {isSubmitting ? 'Submitting...' : 'Submit'}
+              {isSubmitting ? 'Adding...' : 'Add'}
             </FilledButton>
           )}
-        /> */}
+        />
       </form>
     </Box>
   )
