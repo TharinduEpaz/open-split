@@ -1,9 +1,16 @@
-import { FilledButton } from '@/components/ui/common/filled-button'
-import { Box, FormHelperText, TextField } from '@mui/material'
-import type { AnyFieldApi } from '@tanstack/react-form'
+import {
+  Box,
+  Divider,
+  FormGroup,
+  FormHelperText,
+  FormLabel,
+  TextField,
+} from '@mui/material'
 import { useForm } from '@tanstack/react-form'
 import { PlusIcon } from 'lucide-react'
 import { useCreateSplit } from '../../state/use-create-split'
+import type { AnyFieldApi } from '@tanstack/react-form'
+import { FilledButton } from '@/components/ui/common/filled-button'
 
 function FieldInfo({ field }: { field: AnyFieldApi }) {
   return (
@@ -27,12 +34,19 @@ export default function AddPeopleForm() {
     defaultValues: {
       firstName: '',
       email: '',
+      bankDetails: {
+        accountNo: '',
+        bank: '',
+        branch: '',
+        accName: '',
+      },
     },
     onSubmit: async ({ value }) => {
       // Save form data to Zustand store
       setCreateSplitData({
         firstName: value.firstName,
         email: value.email,
+        bankDetails: value.bankDetails,
       })
       console.log('Data saved to store:', value)
     },
@@ -124,6 +138,43 @@ export default function AddPeopleForm() {
             )}
           />
         </Box>
+
+        <Divider />
+
+        <Box>
+          <FormGroup>
+            <FormLabel>Bank Account Details (optional)</FormLabel>
+            <form.Field
+              name="bankDetails.accName"
+              children={({ state, handleChange, handleBlur }) => (
+                <Box>
+                  <TextField
+                    id="accName"
+                    label="Account Name"
+                    variant="standard"
+                    fullWidth
+                    value={state.value}
+                    onChange={(e) => handleChange(e.target.value)}
+                    onBlur={handleBlur}
+                    error={state.meta.isTouched && !state.meta.isValid}
+                    placeholder="Enter Bank Account Name"
+                  />
+                  <FieldInfo
+                    field={
+                      {
+                        state,
+                        handleChange,
+                        handleBlur,
+                        name: 'accName',
+                      } as AnyFieldApi
+                    }
+                  />
+                </Box>
+              )}
+            />
+          </FormGroup>
+        </Box>
+
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
           children={([canSubmit, isSubmitting]) => (

@@ -1,4 +1,3 @@
-import * as React from 'react'
 import {
   Avatar,
   Box,
@@ -9,6 +8,7 @@ import {
   Typography,
 } from '@mui/material'
 import { Trash2 } from 'lucide-react'
+import * as React from 'react'
 import AddPeopleForm from './add-people-form'
 import { SplitSubtitle } from '@/components/ui/common/split-subtitle'
 
