@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   Card,
+  Divider,
   IconButton,
   Modal,
   Stack,
@@ -114,6 +115,37 @@ function PeopleCard({ name, email }: PeopleCardProps) {
                   Email
                 </Typography>
                 <Typography variant="body1">{email}</Typography>
+              </Box>
+
+              <Divider sx={{ my: 1 }} />
+
+              <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                Bank Details
+              </Typography>
+
+              <Box>
+                <Typography variant="subtitle2" color="text.secondary">
+                  Account Name
+                </Typography>
+                <Typography variant="body1">John Smith</Typography>
+              </Box>
+              <Box>
+                <Typography variant="subtitle2" color="text.secondary">
+                  Account Number
+                </Typography>
+                <Typography variant="body1">1234567890</Typography>
+              </Box>
+              <Box>
+                <Typography variant="subtitle2" color="text.secondary">
+                  Bank Name
+                </Typography>
+                <Typography variant="body1">Sample Bank</Typography>
+              </Box>
+              <Box>
+                <Typography variant="subtitle2" color="text.secondary">
+                  Branch
+                </Typography>
+                <Typography variant="body1">Main Branch</Typography>
               </Box>
             </Stack>
           </Box>
