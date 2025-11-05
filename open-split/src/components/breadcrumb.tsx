@@ -10,14 +10,12 @@ interface BreadcrumbItem {
 }
 
 // Map of routes to their breadcrumb items
-const breadcrumbMap: Record<string, BreadcrumbItem[]> = {
-  '/': [
-    { label: 'Home', href: '/' }
-  ],
+const breadcrumbMap: Record<string, Array<BreadcrumbItem>> = {
+  '/': [{ label: 'Home', href: '/' }],
   '/create-split': [
     { label: 'Home', href: '/' },
-    { label: 'Create Split', href: '/create-split' }
-  ]
+    { label: 'Create Split', href: '/create-split' },
+  ],
 }
 
 export default function BasicBreadcrumbs() {
@@ -26,7 +24,7 @@ export default function BasicBreadcrumbs() {
   const breadcrumbs = breadcrumbMap[location.pathname] || []
 
   return (
-    <div role="presentation"  className="py-2">
+    <div role="presentation" className="py-2">
       <Breadcrumbs
         aria-label="breadcrumb"
         separator={<ChevronRight size={16} />}

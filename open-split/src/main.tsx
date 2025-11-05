@@ -3,8 +3,12 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 import GlobalStyles from '@mui/material/GlobalStyles'
-import { createTheme, StyledEngineProvider, ThemeProvider } from '@mui/material/styles'
-import { createRouter, RouterProvider } from '@tanstack/react-router'
+import {
+  StyledEngineProvider,
+  ThemeProvider,
+  createTheme,
+} from '@mui/material/styles'
+import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 
@@ -69,8 +73,7 @@ const theme = createTheme({
     borderRadius: 8, // Default border radius
   },
   spacing: 8, // Base spacing unit (default is 8px)
-});
-
+})
 
 // Render the app
 const rootElement = document.getElementById('app')
@@ -79,11 +82,11 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <ThemeProvider theme={theme}>
-      <StyledEngineProvider enableCssLayer>
-        <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
-        {/* Your app */}
-        <RouterProvider router={router} />
-      </StyledEngineProvider>
+        <StyledEngineProvider enableCssLayer>
+          <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
+          {/* Your app */}
+          <RouterProvider router={router} />
+        </StyledEngineProvider>
       </ThemeProvider>
     </StrictMode>,
   )

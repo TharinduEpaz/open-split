@@ -12,10 +12,10 @@ import {
   Typography,
 } from '@mui/material'
 import { useForm } from '@tanstack/react-form'
-import type { AnyFieldApi } from '@tanstack/react-form'
 import { PlusIcon, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useCreateSplit } from '../../state/use-create-split'
+import type { AnyFieldApi } from '@tanstack/react-form'
 import { FilledButton } from '@/components/ui/common/filled-button'
 import { FieldInfo } from '@/components/form/field-info'
 import { OutlinedButton } from '@/components/ui/common/outlined-button'
@@ -36,7 +36,7 @@ export default function AddTaskForm() {
   const { setCreateSplitData } = useCreateSplit()
   const [multiplePeople, setMultiplePeople] = useState(false)
   const [responsiblePeople, setResponsiblePeople] = useState<
-    ResponsiblePerson[]
+    Array<ResponsiblePerson>
   >([{ personId: '', amount: '' }])
 
   const form = useForm({
@@ -78,7 +78,7 @@ export default function AddTaskForm() {
   const updateResponsiblePerson = (
     index: number,
     field: keyof ResponsiblePerson,
-    value: string
+    value: string,
   ) => {
     const updated = [...responsiblePeople]
     updated[index][field] = value
@@ -263,9 +263,7 @@ export default function AddTaskForm() {
                   alignItems="flex-start"
                 >
                   <FormControl variant="standard" sx={{ flex: 1 }}>
-                    <InputLabel id={`person-${index}-label`}>
-                      Person
-                    </InputLabel>
+                    <InputLabel id={`person-${index}-label`}>Person</InputLabel>
                     <Select
                       labelId={`person-${index}-label`}
                       value={person.personId}
@@ -273,7 +271,7 @@ export default function AddTaskForm() {
                         updateResponsiblePerson(
                           index,
                           'personId',
-                          e.target.value
+                          e.target.value,
                         )
                       }
                     >

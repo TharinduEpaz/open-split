@@ -69,7 +69,7 @@ export default function CreateSplitStepper() {
   }
 
   return (
-    <Box sx={{ width: '100%', height:'100%'}}>
+    <Box sx={{ width: '100%', height: '100%' }}>
       <Stepper activeStep={activeStep}>
         {steps.map((label, index) => {
           const stepProps: { completed?: boolean } = {}
@@ -103,9 +103,7 @@ export default function CreateSplitStepper() {
         </React.Fragment>
       ) : (
         <React.Fragment>
-          <Box>
-          {_renderStepContent(activeStep)}
-          </Box>
+          <Box>{_renderStepContent(activeStep)}</Box>
 
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button

@@ -7,10 +7,10 @@ import {
   Typography,
 } from '@mui/material'
 import { useForm } from '@tanstack/react-form'
-import type { AnyFieldApi } from '@tanstack/react-form'
 import { PlusIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useCreateSplit } from '../../state/use-create-split'
+import type { AnyFieldApi } from '@tanstack/react-form'
 import { FilledButton } from '@/components/ui/common/filled-button'
 import { FieldInfo } from '@/components/form/field-info'
 

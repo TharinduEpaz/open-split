@@ -1,5 +1,5 @@
 import Button from '@mui/material/Button'
-import type {ButtonProps} from '@mui/material/Button';
+import type { ButtonProps } from '@mui/material/Button'
 
 interface OutlinedButtonProps extends Omit<ButtonProps, 'variant' | 'size'> {
   size?: 'small' | 'medium' | 'large'

@@ -1,10 +1,10 @@
 import Box from '@mui/material/Box'
-import { FilledButton } from '@/components/ui/common/filled-button'
-import { Link, Shrimp, Shuffle } from 'lucide-react'
-import PieChartWithCenterLabel from './pie-chart'
+import { Link, Shuffle } from 'lucide-react'
 import { Divider, Stack, Typography } from '@mui/material'
-import { OutlinedButton } from '@/components/ui/common/outlined-button'
+import PieChartWithCenterLabel from './pie-chart'
 import DebtTable from './debt-table'
+import { OutlinedButton } from '@/components/ui/common/outlined-button'
+import { FilledButton } from '@/components/ui/common/filled-button'
 
 export const GenerateLink = () => {
   return (
