@@ -6,8 +6,8 @@ import Stepper from '@mui/material/Stepper'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
 import AddPeople from './components/add-people/add-people'
-import AddTaskForm from './components/add-task-form'
-import { GenerateLinkForm } from './components/generate-link-form'
+import AddTask from './components/add-task/add-task'
+import { GenerateLink } from './components/generate-link/generate-link'
 
 const steps = ['Add People', 'Add Tasks', 'Generate Link']
 
@@ -60,16 +60,16 @@ export default function CreateSplitStepper() {
       case 0:
         return <AddPeople />
       case 1:
-        return <AddTaskForm />
+        return <AddTask />
       case 2:
-        return <GenerateLinkForm />
+        return <GenerateLink />
       default:
         return 'Unknown step'
     }
   }
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%', height:'100%'}}>
       <Stepper activeStep={activeStep}>
         {steps.map((label, index) => {
           const stepProps: { completed?: boolean } = {}
@@ -103,7 +103,9 @@ export default function CreateSplitStepper() {
         </React.Fragment>
       ) : (
         <React.Fragment>
+          <Box>
           {_renderStepContent(activeStep)}
+          </Box>
 
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button

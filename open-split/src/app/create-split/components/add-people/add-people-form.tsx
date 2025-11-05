@@ -2,32 +2,17 @@ import {
   Box,
   FormControlLabel,
   FormGroup,
-  FormHelperText,
   Switch,
   TextField,
   Typography,
 } from '@mui/material'
 import { useForm } from '@tanstack/react-form'
+import type { AnyFieldApi } from '@tanstack/react-form'
 import { PlusIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useCreateSplit } from '../../state/use-create-split'
-import type { AnyFieldApi } from '@tanstack/react-form'
 import { FilledButton } from '@/components/ui/common/filled-button'
-
-function FieldInfo({ field }: { field: AnyFieldApi }) {
-  return (
-    <>
-      {field.state.meta.isTouched && !field.state.meta.isValid ? (
-        <FormHelperText error>
-          {field.state.meta.errors.join(', ')}
-        </FormHelperText>
-      ) : null}
-      {field.state.meta.isValidating ? (
-        <FormHelperText>Validating...</FormHelperText>
-      ) : null}
-    </>
-  )
-}
+import { FieldInfo } from '@/components/form/field-info'
 
 export default function AddPeopleForm() {
   const { setCreateSplitData } = useCreateSplit()
@@ -56,7 +41,7 @@ export default function AddPeopleForm() {
   })
 
   return (
-    <Box className="mt-12 h-120" maxWidth={'400px'}>
+    <Box className="mt-12" maxWidth={'400px'} sx={{ pb: 4 }}>
       <form
         onSubmit={(e) => {
           e.preventDefault()
