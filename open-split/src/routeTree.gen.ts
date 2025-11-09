@@ -9,9 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MySplitsRouteRouteImport } from './routes/my-splits/route'
 import { Route as CreateSplitRouteRouteImport } from './routes/create-split/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MySplitsIndexRouteImport } from './routes/my-splits/index'
+import { Route as MySplitsSplitIdRouteRouteImport } from './routes/my-splits/$splitId/route'
+import { Route as MySplitsSplitIdIndexRouteImport } from './routes/my-splits/$splitId/index'
+import { Route as MySplitsSplitIdPayerNameRouteImport } from './routes/my-splits/$splitId/$payerName'
 
+const MySplitsRouteRoute = MySplitsRouteRouteImport.update({
+  id: '/my-splits',
+  path: '/my-splits',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CreateSplitRouteRoute = CreateSplitRouteRouteImport.update({
   id: '/create-split',
   path: '/create-split',
@@ -22,35 +32,97 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MySplitsIndexRoute = MySplitsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MySplitsRouteRoute,
+} as any)
+const MySplitsSplitIdRouteRoute = MySplitsSplitIdRouteRouteImport.update({
+  id: '/$splitId',
+  path: '/$splitId',
+  getParentRoute: () => MySplitsRouteRoute,
+} as any)
+const MySplitsSplitIdIndexRoute = MySplitsSplitIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MySplitsSplitIdRouteRoute,
+} as any)
+const MySplitsSplitIdPayerNameRoute =
+  MySplitsSplitIdPayerNameRouteImport.update({
+    id: '/$payerName',
+    path: '/$payerName',
+    getParentRoute: () => MySplitsSplitIdRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/create-split': typeof CreateSplitRouteRoute
+  '/my-splits': typeof MySplitsRouteRouteWithChildren
+  '/my-splits/$splitId': typeof MySplitsSplitIdRouteRouteWithChildren
+  '/my-splits/': typeof MySplitsIndexRoute
+  '/my-splits/$splitId/$payerName': typeof MySplitsSplitIdPayerNameRoute
+  '/my-splits/$splitId/': typeof MySplitsSplitIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/create-split': typeof CreateSplitRouteRoute
+  '/my-splits': typeof MySplitsIndexRoute
+  '/my-splits/$splitId/$payerName': typeof MySplitsSplitIdPayerNameRoute
+  '/my-splits/$splitId': typeof MySplitsSplitIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/create-split': typeof CreateSplitRouteRoute
+  '/my-splits': typeof MySplitsRouteRouteWithChildren
+  '/my-splits/$splitId': typeof MySplitsSplitIdRouteRouteWithChildren
+  '/my-splits/': typeof MySplitsIndexRoute
+  '/my-splits/$splitId/$payerName': typeof MySplitsSplitIdPayerNameRoute
+  '/my-splits/$splitId/': typeof MySplitsSplitIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/create-split'
+  fullPaths:
+    | '/'
+    | '/create-split'
+    | '/my-splits'
+    | '/my-splits/$splitId'
+    | '/my-splits/'
+    | '/my-splits/$splitId/$payerName'
+    | '/my-splits/$splitId/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/create-split'
-  id: '__root__' | '/' | '/create-split'
+  to:
+    | '/'
+    | '/create-split'
+    | '/my-splits'
+    | '/my-splits/$splitId/$payerName'
+    | '/my-splits/$splitId'
+  id:
+    | '__root__'
+    | '/'
+    | '/create-split'
+    | '/my-splits'
+    | '/my-splits/$splitId'
+    | '/my-splits/'
+    | '/my-splits/$splitId/$payerName'
+    | '/my-splits/$splitId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreateSplitRouteRoute: typeof CreateSplitRouteRoute
+  MySplitsRouteRoute: typeof MySplitsRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/my-splits': {
+      id: '/my-splits'
+      path: '/my-splits'
+      fullPath: '/my-splits'
+      preLoaderRoute: typeof MySplitsRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/create-split': {
       id: '/create-split'
       path: '/create-split'
@@ -65,12 +137,68 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/my-splits/': {
+      id: '/my-splits/'
+      path: '/'
+      fullPath: '/my-splits/'
+      preLoaderRoute: typeof MySplitsIndexRouteImport
+      parentRoute: typeof MySplitsRouteRoute
+    }
+    '/my-splits/$splitId': {
+      id: '/my-splits/$splitId'
+      path: '/$splitId'
+      fullPath: '/my-splits/$splitId'
+      preLoaderRoute: typeof MySplitsSplitIdRouteRouteImport
+      parentRoute: typeof MySplitsRouteRoute
+    }
+    '/my-splits/$splitId/': {
+      id: '/my-splits/$splitId/'
+      path: '/'
+      fullPath: '/my-splits/$splitId/'
+      preLoaderRoute: typeof MySplitsSplitIdIndexRouteImport
+      parentRoute: typeof MySplitsSplitIdRouteRoute
+    }
+    '/my-splits/$splitId/$payerName': {
+      id: '/my-splits/$splitId/$payerName'
+      path: '/$payerName'
+      fullPath: '/my-splits/$splitId/$payerName'
+      preLoaderRoute: typeof MySplitsSplitIdPayerNameRouteImport
+      parentRoute: typeof MySplitsSplitIdRouteRoute
+    }
   }
 }
+
+interface MySplitsSplitIdRouteRouteChildren {
+  MySplitsSplitIdPayerNameRoute: typeof MySplitsSplitIdPayerNameRoute
+  MySplitsSplitIdIndexRoute: typeof MySplitsSplitIdIndexRoute
+}
+
+const MySplitsSplitIdRouteRouteChildren: MySplitsSplitIdRouteRouteChildren = {
+  MySplitsSplitIdPayerNameRoute: MySplitsSplitIdPayerNameRoute,
+  MySplitsSplitIdIndexRoute: MySplitsSplitIdIndexRoute,
+}
+
+const MySplitsSplitIdRouteRouteWithChildren =
+  MySplitsSplitIdRouteRoute._addFileChildren(MySplitsSplitIdRouteRouteChildren)
+
+interface MySplitsRouteRouteChildren {
+  MySplitsSplitIdRouteRoute: typeof MySplitsSplitIdRouteRouteWithChildren
+  MySplitsIndexRoute: typeof MySplitsIndexRoute
+}
+
+const MySplitsRouteRouteChildren: MySplitsRouteRouteChildren = {
+  MySplitsSplitIdRouteRoute: MySplitsSplitIdRouteRouteWithChildren,
+  MySplitsIndexRoute: MySplitsIndexRoute,
+}
+
+const MySplitsRouteRouteWithChildren = MySplitsRouteRoute._addFileChildren(
+  MySplitsRouteRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreateSplitRouteRoute: CreateSplitRouteRoute,
+  MySplitsRouteRoute: MySplitsRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

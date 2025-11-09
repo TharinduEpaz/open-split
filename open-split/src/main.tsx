@@ -38,7 +38,7 @@ declare module '@tanstack/react-router' {
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2', // Your primary color
+      main: '#000000', // Your primary color
       light: '#42a5f5',
       dark: '#1565c0',
       contrastText: '#fff',

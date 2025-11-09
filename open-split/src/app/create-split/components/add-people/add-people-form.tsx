@@ -1,3 +1,5 @@
+import { FieldInfo } from '@/components/form/field-info'
+import { FilledButton } from '@/components/ui/common/filled-button'
 import {
   Box,
   FormControlLabel,
@@ -6,13 +8,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import type { AnyFieldApi } from '@tanstack/react-form'
 import { useForm } from '@tanstack/react-form'
 import { PlusIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useCreateSplit } from '../../state/use-create-split'
-import type { AnyFieldApi } from '@tanstack/react-form'
-import { FilledButton } from '@/components/ui/common/filled-button'
-import { FieldInfo } from '@/components/form/field-info'
 
 export default function AddPeopleForm() {
   const { setCreateSplitData } = useCreateSplit()
@@ -20,6 +20,7 @@ export default function AddPeopleForm() {
 
   const form = useForm({
     defaultValues: {
+      splitName: '',
       firstName: '',
       email: '',
       bankDetails: {
@@ -32,6 +33,7 @@ export default function AddPeopleForm() {
     onSubmit: async ({ value }) => {
       // Save form data to Zustand store
       setCreateSplitData({
+        splitName: value.splitName,
         firstName: value.firstName,
         email: value.email,
         bankDetails: showBankDetails ? value.bankDetails : null,
@@ -49,6 +51,46 @@ export default function AddPeopleForm() {
           form.handleSubmit()
         }}
       >
+        <Box sx={{ mb: 2 }}>
+          <form.Field
+            name="splitName"
+            validators={{
+              onChange: ({ value }) =>
+                !value
+                  ? 'Split name is required'
+                  : value.length < 3
+                    ? 'Split name must be at least 3 characters'
+                    : undefined,
+            }}
+            children={({ state, handleChange, handleBlur }) => {
+              return (
+                <Box>
+                  <TextField
+                    id="splitName"
+                    label="Split Name"
+                    variant="standard"
+                    fullWidth
+                    value={state.value}
+                    onChange={(e) => handleChange(e.target.value)}
+                    onBlur={handleBlur}
+                    error={state.meta.isTouched && !state.meta.isValid}
+                    placeholder="e.g., Weekend Trip to Bali"
+                  />
+                  <FieldInfo
+                    field={
+                      {
+                        state,
+                        handleChange,
+                        handleBlur,
+                        name: 'splitName',
+                      } as AnyFieldApi
+                    }
+                  />
+                </Box>
+              )
+            }}
+          />
+        </Box>
         <Box sx={{ mb: 2 }}>
           <form.Field
             name="firstName"

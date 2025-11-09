@@ -35,7 +35,9 @@ function App() {
               <FilledButton>Generate Split</FilledButton>
             </Link>
 
-            <OutlinedButton>View Recent Splits</OutlinedButton>
+            <Link to="/my-splits">
+              <OutlinedButton>My Splits</OutlinedButton>
+            </Link>
           </Stack>
         </Box>
       </Container>

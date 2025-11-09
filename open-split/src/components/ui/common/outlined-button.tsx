@@ -16,7 +16,7 @@ export function OutlinedButton({
       variant="outlined"
       size={size}
       color="primary"
-      className="rounded-full"
+      className="rounded-none"
       {...props}
     >
       {children}
