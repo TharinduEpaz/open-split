@@ -36,23 +36,8 @@ const getStatusLabel = (status: string): string => {
   }
 }
 
-const getStatusStyles = (status: string) => {
-  switch (status) {
-    case 'fully-settled':
-      return {
-        color: '#2e7d32',
-      }
-    case 'unsettled':
-      return {
-        color: '#d84315',
-      }
-    case 'partially-settled':
-      return {
-        color: '#f57f17',
-      }
-    default:
-      return {}
-  }
+const getStatusColor = (status: string): "success" | "default" => {
+  return status === 'fully-settled' ? 'success' : 'default'
 }
 
 export default function SplitDetailTable() {
@@ -95,14 +80,7 @@ export default function SplitDetailTable() {
                   <Chip
                     label={getStatusLabel(person.status)}
                     size="small"
-                    sx={{
-                      ...getStatusStyles(person.status),
-                      minWidth: '150px',
-                      fontWeight: 600,
-                      borderRadius:0,
-                      backgroundColor:"white",
-                      border:"1px solid"
-                    }}
+                    color={getStatusColor(person.status)}
                   />
                 </TableCell>
                 <TableCell align="right">

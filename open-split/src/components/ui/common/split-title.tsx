@@ -7,14 +7,14 @@ interface SplitTitleProps {
 export function SplitTitle({ children }: SplitTitleProps) {
   return (
     <Typography
-      variant="h3"
+      variant="h1"
       component="h1"
       sx={{
-        fontWeight: 700,
-        fontSize: { xs: '2.5rem', sm: '3.5rem' },
+        fontWeight: 800,
         mb: 2,
         color: '#000',
       }}
+      className='text-white text-8xl'
     >
       {children}
     </Typography>

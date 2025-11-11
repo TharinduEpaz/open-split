@@ -1,4 +1,5 @@
-import { Box, Typography } from '@mui/material'
+import SplitDetails from '@/app/split-details/split-details'
+import { Box } from '@mui/material'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/my-splits/$splitId/$payerName')({
@@ -6,7 +7,7 @@ export const Route = createFileRoute('/my-splits/$splitId/$payerName')({
 })
 
 function RouteComponent() {
-  const { splitId, payerName } = Route.useParams()
+  const { payerName } = Route.useParams()
 
   return (
     <>
@@ -16,12 +17,14 @@ function RouteComponent() {
         </span>
       </Box>
       <Box sx={{ mt: 4 }}>
-        <Typography variant="h6">
+        {/* <Typography variant="h6">
           Payment details for {payerName} in split {splitId}
         </Typography>
         <Typography variant="body1" sx={{ mt: 2 }}>
           This is where the payment details and settlement information will be displayed.
-        </Typography>
+        </Typography> */}
+        <SplitDetails />
+        
       </Box>
     </>
   )

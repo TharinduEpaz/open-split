@@ -19,7 +19,7 @@ function App() {
         <Box sx={{ textAlign: 'center' }}>
           {/* Header Section */}
           <Box sx={{ mb: 6 }}>
-            <SplitTitle>Welcome to open split</SplitTitle>
+            <SplitTitle >Welcome to open split</SplitTitle>
             <SplitSubtitle>
               Easily create fund splits with your friends
             </SplitSubtitle>
@@ -36,7 +36,7 @@ function App() {
             </Link>
 
             <Link to="/my-splits">
-              <OutlinedButton>My Splits</OutlinedButton>
+              <OutlinedButton className='text-white'>My Splits</OutlinedButton>
             </Link>
           </Stack>
         </Box>

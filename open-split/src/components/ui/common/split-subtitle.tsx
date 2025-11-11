@@ -13,6 +13,7 @@ export function SplitSubtitle({ children }: SplitSubtitleProps) {
         color: '#666',
         fontWeight: 400,
       }}
+      className='text-amber-200'
     >
       {children}
     </Typography>
