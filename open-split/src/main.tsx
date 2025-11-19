@@ -34,28 +34,29 @@ declare module '@tanstack/react-router' {
     router: typeof router
   }
 }
+const colors = ["#3b3e5a", "#ed6b5a", "#ece6ce", "#f7ac68"]
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#000000', // Your primary color
-      light: '#42a5f5',
-      dark: '#1565c0',
-      contrastText: '#fff',
+      main: colors[0], 
+      // light: '#42a5f5',
+      // dark: '#1565c0',
+      // contrastText: '#fff',
     },
     secondary: {
-      main: '#dc004e', // Your secondary color
-      light: '#f33a6a',
-      dark: '#9a0036',
-      contrastText: '#fff',
+      main: colors[1], 
+      // light: '#f33a6a',
+      // dark: '#9a0036',
+      // contrastText: '#fff',
     },
     background: {
-      default: '#f5f5f5',
-      paper: '#ffffff',
+      default: colors[2],
     },
+    
     text: {
-      primary: '#333333',
-      secondary: '#666666',
+      primary: colors[0],
+      // secondary: colors[],
     },
   },
   typography: {

@@ -15,8 +15,7 @@ export function FilledButton({
     <Button
       variant="contained"
       size={size}
-      color='primary'
-      
+
      
       {...props}
     >

@@ -8,7 +8,7 @@ export const Route = createFileRoute('/my-splits')({
 
 function RouteComponent() {
   return (
-    <Container className="mt-10 mb-10" maxWidth="md">
+    <Container className="mt-10 mb-10 bg-primary" maxWidth="md" >
       <BasicBreadcrumbs />
       <Outlet />
     </Container>
