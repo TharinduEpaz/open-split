@@ -8,12 +8,16 @@ import * as React from 'react'
 import AddPeople from './components/add-people/add-people'
 import AddTask from './components/add-task/add-task'
 import { GenerateLink } from './components/generate-link/generate-link'
+import { useCreateSplit } from './state/use-create-split'
 
 const steps = ['Add People', 'Add Tasks', 'Generate Link']
 
 export default function CreateSplitStepper() {
   const [activeStep, setActiveStep] = React.useState(0)
   const [skipped, setSkipped] = React.useState(new Set<number>())
+  const { isFormSubmitted : isAddPeopleFormSubmitted } = useCreateSplit()
+
+  const isNextButtonDisabled = !isAddPeopleFormSubmitted
 
   const isStepOptional = (step: number) => {
     return step === 99999
@@ -120,7 +124,7 @@ export default function CreateSplitStepper() {
                 Skip
               </Button>
             )}
-            <Button onClick={handleNext}>
+            <Button onClick={handleNext} disabled={isNextButtonDisabled}>
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>
           </Box>

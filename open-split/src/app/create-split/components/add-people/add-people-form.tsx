@@ -13,24 +13,26 @@ import {
 import type { AnyFieldApi } from '@tanstack/react-form'
 import { useForm } from '@tanstack/react-form'
 import { PlusIcon } from 'lucide-react'
-import { useState, useEffect } from 'react'
 import { useCreateSplit } from '../../state/use-create-split'
 import { useLoadingBar } from '@/hooks/use-loading-bar'
+import { useEffect } from 'react'
 
 export default function AddPeopleForm() {
-  const { setCreateSplitData, createSplitData } = useCreateSplit()
+  const {
+    setCreateSplitData,
+    createSplitData,
+    showBankDetails,
+    setShowBankDetails,
+    showToast,
+    setShowToast,
+    addedPersonName,
+    setAddedPersonName,
+    setIsFormSubmitted,
+  } = useCreateSplit()
   const { start: startLoading, complete: completeLoading } = useLoadingBar()
-  const [showBankDetails, setShowBankDetails] = useState(false)
-  const [splitNameSubmitted, setSplitNameSubmitted] = useState(
-    !!createSplitData.splitName
-  )
-  const [showToast, setShowToast] = useState(false)
-  const [addedPersonName, setAddedPersonName] = useState('')
-
-  // Sync split name submitted state with store
-  useEffect(() => {
-    setSplitNameSubmitted(!!createSplitData.splitName)
-  }, [createSplitData.splitName])
+  
+  // Compute splitNameSubmitted from store
+  const splitNameSubmitted = !!createSplitData.splitName
 
   // Form for split name (one-time submit)
   const splitNameForm = useForm({
@@ -41,7 +43,6 @@ export default function AddPeopleForm() {
       setCreateSplitData({
         splitName: value.splitName,
       })
-      setSplitNameSubmitted(true)
     },
   })
 
@@ -77,6 +78,12 @@ export default function AddPeopleForm() {
       }
     },
   })  
+
+  useEffect(() => {
+    if (splitNameForm.state.isSubmitted && peopleForm.state.isSubmitted) {
+      setIsFormSubmitted(true)
+    }
+  }, [splitNameForm.state.isSubmitted, peopleForm.state.isSubmitted])
 
   return (
     <Box className="mt-12" maxWidth={'400px'} sx={{ pb: 4 }}>
@@ -406,7 +413,7 @@ export default function AddPeopleForm() {
         open={showToast}
         autoHideDuration={3000}
         onClose={() => setShowToast(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <Alert
           onClose={() => setShowToast(false)}

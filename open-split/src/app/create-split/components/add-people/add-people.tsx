@@ -37,12 +37,36 @@ function AddPeople() {
         <Box width={'50%'}>
           <AddPeopleForm />
         </Box>
-        <Box width={'50%'}>
-          <Stack direction={'column'} className="mt-16 p-4 gap-4">
-            {createSplitData.people.map((person, index) => (
-              <PeopleCard key={index} name={person.firstName} email={person.email} bankDetails={person.bankDetails} />
-            ))}
-          </Stack>
+        <Box 
+          width={'50%'} 
+          className="border m-4 overflow-auto rounded-lg border-gray-200"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '400px',
+          }}
+        >
+          {createSplitData.people && createSplitData.people.length === 0 ? (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1,
+                height: '100%',
+              }}
+            >
+              <Typography variant="caption" className="text-gray-500">
+                No people added yet
+              </Typography>
+            </Box>
+          ) : (
+            <Stack direction={'column'} className=" p-4 gap-4">
+              {createSplitData.people.map((person, index) => (
+                <PeopleCard key={index} name={person.firstName} email={person.email} bankDetails={person.bankDetails} />
+              ))}
+            </Stack>
+          )}
         </Box>
       </Stack>
     </>
@@ -103,49 +127,64 @@ function PeopleCard({ name, email, bankDetails }: PeopleCardProps) {
           </Typography>
           <Box sx={{ mt: 3 }}>
             <Stack spacing={2}>
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Name
-                </Typography>
-                <Typography variant="body1">{name}</Typography>
-              </Box>
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Email
-                </Typography>
-                <Typography variant="body1">{email}</Typography>
-              </Box>
+              {name && (
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Name
+                  </Typography>
+                  <Typography variant="body1">{name}</Typography>
+                </Box>
+              )}
+              {email && (
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Email
+                  </Typography>
+                  <Typography variant="body1">{email}</Typography>
+                </Box>
+              )}
 
-              <Divider sx={{ my: 1 }} />
+              {(bankDetails.accName || bankDetails.accountNo || bankDetails.bank || bankDetails.branch) && (
+                <>
+                  <Divider sx={{ my: 1 }} />
+                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                    Bank Details
+                  </Typography>
 
-              <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                Bank Details
-              </Typography>
-
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Account Name
-                </Typography>
-                <Typography variant="body1">{bankDetails.accName}</Typography>
-              </Box>
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Account Number
-                </Typography>
-                <Typography variant="body1">{bankDetails.accountNo}</Typography>
-              </  Box>
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Bank Name
-                </Typography>
-                <Typography variant="body1">{bankDetails.bank}</Typography>
-              </Box>
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Branch
-                </Typography>
-                <Typography variant="body1">{bankDetails.branch}</Typography>
-              </Box>
+                  {bankDetails.accName && (
+                    <Box>
+                      <Typography variant="subtitle2" color="text.secondary">
+                        Account Name
+                      </Typography>
+                      <Typography variant="body1">{bankDetails.accName}</Typography>
+                    </Box>
+                  )}
+                  {bankDetails.accountNo && (
+                    <Box>
+                      <Typography variant="subtitle2" color="text.secondary">
+                        Account Number
+                      </Typography>
+                      <Typography variant="body1">{bankDetails.accountNo}</Typography>
+                    </Box>
+                  )}
+                  {bankDetails.bank && (
+                    <Box>
+                      <Typography variant="subtitle2" color="text.secondary">
+                        Bank Name
+                      </Typography>
+                      <Typography variant="body1">{bankDetails.bank}</Typography>
+                    </Box>
+                  )}
+                  {bankDetails.branch && (
+                    <Box>
+                      <Typography variant="subtitle2" color="text.secondary">
+                        Branch
+                      </Typography>
+                      <Typography variant="body1">{bankDetails.branch}</Typography>
+                    </Box>
+                  )}
+                </>
+              )}
             </Stack>
           </Box>
         </Box>
