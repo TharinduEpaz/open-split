@@ -1,3 +1,6 @@
+import { FieldInfo } from '@/components/form/field-info'
+import { FilledButton } from '@/components/ui/common/filled-button'
+import { OutlinedButton } from '@/components/ui/common/outlined-button'
 import {
   Box,
   FormControl,
@@ -11,14 +14,10 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import type { AnyFieldApi } from '@tanstack/react-form'
 import { useForm } from '@tanstack/react-form'
 import { PlusIcon, Trash2 } from 'lucide-react'
 import { useState } from 'react'
-import { useCreateSplit } from '../../state/use-create-split'
-import type { AnyFieldApi } from '@tanstack/react-form'
-import { FilledButton } from '@/components/ui/common/filled-button'
-import { FieldInfo } from '@/components/form/field-info'
-import { OutlinedButton } from '@/components/ui/common/outlined-button'
 
 // Sample people data - in a real app, this would come from the store
 const people = [
@@ -33,7 +32,6 @@ interface ResponsiblePerson {
 }
 
 export default function AddTaskForm() {
-  const { setCreateSplitData } = useCreateSplit()
   const [multiplePeople, setMultiplePeople] = useState(false)
   const [responsiblePeople, setResponsiblePeople] = useState<
     Array<ResponsiblePerson>
@@ -45,26 +43,9 @@ export default function AddTaskForm() {
       amount: '',
       responsiblePerson: '',
     },
-    onSubmit: async ({ value }) => {
-      // Save form data to Zustand store
-      const dataToSave = multiplePeople
-        ? {
-            taskName: value.taskName,
-            amount: parseFloat(value.amount),
-            responsiblePeople: responsiblePeople.map((rp) => ({
-              personId: rp.personId,
-              amount: parseFloat(rp.amount),
-            })),
-          }
-        : {
-            taskName: value.taskName,
-            amount: parseFloat(value.amount),
-            responsiblePerson: value.responsiblePerson,
-          }
-
-      setCreateSplitData(dataToSave)
-      console.log('Task data saved to store:', dataToSave)
-    },
+    // onSubmit: async ({ value }) => {
+    //   // setCreateSplitData(dataToSave)
+    // },
   })
 
   const addResponsiblePerson = () => {

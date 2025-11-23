@@ -52,12 +52,15 @@ const theme = createTheme({
     },
     background: {
       default: colors[2],
+      
     },
     
     text: {
       primary: colors[0],
+      secondary: colors[3],
       // secondary: colors[],
     },
+   
   },
   typography: {
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',

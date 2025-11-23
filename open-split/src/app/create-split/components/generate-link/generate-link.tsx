@@ -1,10 +1,10 @@
+import { FilledButton } from '@/components/ui/common/filled-button'
+import { OutlinedButton } from '@/components/ui/common/outlined-button'
+import { Divider, Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import { Link, Shuffle } from 'lucide-react'
-import { Divider, Stack, Typography } from '@mui/material'
-import PieChartWithCenterLabel from './pie-chart'
 import DebtTable from './debt-table'
-import { OutlinedButton } from '@/components/ui/common/outlined-button'
-import { FilledButton } from '@/components/ui/common/filled-button'
+import PieChartWithCenterLabel from './pie-chart'
 
 export const GenerateLink = () => {
   return (
@@ -15,7 +15,6 @@ export const GenerateLink = () => {
           <PieChartWithCenterLabel centerLabel="Task wise distribution" />
         </Stack>
       </Box>
-      <Typography variant="h6">Distribution</Typography>
       <DebtTable />
       <Divider className="my-8" />
       <Stack direction={'row'} className="gap-3">

@@ -1,11 +1,6 @@
-import { Chip, Stack } from '@mui/material';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardActionArea from '@mui/material/CardActionArea';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import { Check } from 'lucide-react';
+import { FilledButton } from '@/components/ui/common/filled-button'
+import { OutlinedButton } from '@/components/ui/common/outlined-button'
+import { Check, ArrowRight } from 'lucide-react'
 
 interface SplitDataCardProps {
   name: string;
@@ -16,39 +11,35 @@ interface SplitDataCardProps {
 
 export default function SplitDataCard({ name, status, amount, paid }: SplitDataCardProps) {
   return (
-    <Card sx={{ maxWidth: 345, backgroundColor: paid ? '#d4f4dd' : 'white' }}>
-      <CardActionArea>
-
-        <CardContent>
-          <Stack direction={"row"} className='flex justify-between items-center'>
-
-
-          <Typography gutterBottom variant="h5" component="div">{name}</Typography>
-          <Chip
-            label={status}
-            size="small"
-            color={paid ? "success" : "default"}
-          />
-          </Stack>
-          <Typography variant="h6" sx={{ color: 'text.primary' }}>
-           Pay {amount}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-      <CardActions className="flex gap-2 p-4">
-        <Button
-        className='text-xs'
-          startIcon={<Check />}
+    <div className="bg-neutral-primary-soft block max-w-sm p-6 border border-default rounded-base shadow-xs">
+      <div className="flex justify-between items-center mb-3">
+        <h5 className="text-2xl font-semibold tracking-tight text-heading leading-8">{name}</h5>
+        <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ${
+          paid 
+            ? 'bg-green-400/10 text-green-400 inset-ring inset-ring-green-500/20' 
+            : 'bg-gray-400/10 text-gray-400 inset-ring inset-ring-gray-400/20'
+        }`}>
+          {status}
+        </span>
+      </div>
+      <p className="text-body mb-6">
+        Pay {amount.toFixed(2)}
+      </p>
+      <div className="flex gap-2">
+        <FilledButton
+          size="small"
+          startIcon={<Check size={16} />}
           disabled={paid}
         >
-         {paid ? 'Paid' : 'Mark as Paid'}
-        </Button>
-        <Button
-        className='text-xs'
+          {paid ? 'Paid' : 'Mark as Paid'}
+        </FilledButton>
+        <OutlinedButton
+          size="small"
+          endIcon={<ArrowRight size={16} />}
         >
           View Bank Details
-        </Button>
-      </CardActions>
-    </Card>
+        </OutlinedButton>
+      </div>
+    </div>
   );
 }

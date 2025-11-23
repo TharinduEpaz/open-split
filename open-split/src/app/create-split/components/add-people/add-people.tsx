@@ -12,6 +12,7 @@ import { Trash2 } from 'lucide-react'
 import * as React from 'react'
 import AddPeopleForm from './add-people-form'
 import { SplitSubtitle } from '@/components/ui/common/split-subtitle'
+import { useCreateSplit } from '../../state/use-create-split'
 
 const modalStyle = {
   position: 'absolute',
@@ -26,17 +27,9 @@ const modalStyle = {
   outline: 'none',
 }
 
-interface Person {
-  name: string
-  email: string
-}
 
 function AddPeople() {
-  const people: Array<Person> = [
-    { name: 'Tharindu Epasingha', email: 'epazingha@gmail.com' },
-    { name: 'John Doe', email: 'john@example.com' },
-    { name: 'Jane Smith', email: 'jane@example.com' },
-  ]
+  const { createSplitData } = useCreateSplit()
 
   return (
     <>
@@ -46,8 +39,8 @@ function AddPeople() {
         </Box>
         <Box width={'50%'}>
           <Stack direction={'column'} className="mt-16 p-4 gap-4">
-            {people.map((person, index) => (
-              <PeopleCard key={index} name={person.name} email={person.email} />
+            {createSplitData.people.map((person, index) => (
+              <PeopleCard key={index} name={person.firstName} email={person.email} bankDetails={person.bankDetails} />
             ))}
           </Stack>
         </Box>
@@ -59,9 +52,15 @@ function AddPeople() {
 interface PeopleCardProps {
   name: string
   email: string
+  bankDetails: {
+    accName: string
+    accountNo: string
+    bank: string
+    branch: string
+  }
 }
 
-function PeopleCard({ name, email }: PeopleCardProps) {
+function PeopleCard({ name, email, bankDetails }: PeopleCardProps) {
   const [open, setOpen] = React.useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
@@ -127,25 +126,25 @@ function PeopleCard({ name, email }: PeopleCardProps) {
                 <Typography variant="subtitle2" color="text.secondary">
                   Account Name
                 </Typography>
-                <Typography variant="body1">John Smith</Typography>
+                <Typography variant="body1">{bankDetails.accName}</Typography>
               </Box>
               <Box>
                 <Typography variant="subtitle2" color="text.secondary">
                   Account Number
                 </Typography>
-                <Typography variant="body1">1234567890</Typography>
-              </Box>
+                <Typography variant="body1">{bankDetails.accountNo}</Typography>
+              </  Box>
               <Box>
                 <Typography variant="subtitle2" color="text.secondary">
                   Bank Name
                 </Typography>
-                <Typography variant="body1">Sample Bank</Typography>
+                <Typography variant="body1">{bankDetails.bank}</Typography>
               </Box>
               <Box>
                 <Typography variant="subtitle2" color="text.secondary">
                   Branch
                 </Typography>
-                <Typography variant="body1">Main Branch</Typography>
+                <Typography variant="body1">{bankDetails.branch}</Typography>
               </Box>
             </Stack>
           </Box>

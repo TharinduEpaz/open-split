@@ -1,52 +1,57 @@
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import Paper from '@mui/material/Paper'
-
-function createData(
-  name: string,
-  shouldPay: string,
-  fat: number,
-  carbs: number,
-  protein: number,
-) {
-  return { name, shouldPay, fat, carbs, protein }
+interface DebtRow {
+  name: string
+  shouldPay: string
+  amount: number
 }
 
-const rows = [
-  createData('Tharindu', 'Sandaru', 6.0, 24, 4.0),
-  createData('Pubudu', 'Sandaru', 9.0, 37, 4.3),
-  createData('Manchi', 'Tharindu', 16.0, 24, 6.0),
+const rows: DebtRow[] = [
+  { name: 'Tharindu', shouldPay: 'Sandaru', amount: 6.0 },
+  { name: 'Pubudu', shouldPay: 'Sandaru', amount: 9.0 },
+  { name: 'Manchi', shouldPay: 'Tharindu', amount: 16.0 },
 ]
+
 export default function DebtTable() {
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="caption table">
-        <caption className="text-xs">
-          Tap 'Simplify Debts' to see the optimized payment plan
+    <div className="relative overflow-x-auto bg-background-default shadow-xs rounded-base border border-default">
+      <table className="w-full text-sm text-left rtl:text-right text-body">
+        <caption className="p-5 text-lg font-medium text-left rtl:text-right text-heading">
+          Debt Summary
+          <p className="mt-1.5 text-sm font-normal text-body">Tap 'Simplify Debts' to see the optimized payment plan.</p>
         </caption>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell align="right">Should pay to</TableCell>
-            <TableCell align="right">Amount</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.name}>
-              <TableCell component="th" scope="row">
+        <thead className="text-sm text-body bg-neutral-secondary-medium border-b border-t border-default-medium">
+          <tr>
+            <th scope="col" className="px-6 py-3 font-medium">
+              Name
+            </th>
+            <th scope="col" className="px-6 py-3 font-medium">
+              Should pay to
+            </th>
+            <th scope="col" className="px-6 py-3 font-medium">
+              Amount
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, index) => (
+            <tr
+              key={row.name}
+              className={`bg-neutral-primary-soft ${
+                index !== rows.length - 1 ? 'border-b border-default' : ''
+              }`}
+            >
+              <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap">
                 {row.name}
-              </TableCell>
-              <TableCell align="right">{row.shouldPay}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-            </TableRow>
+              </th>
+              <td className="px-6 py-4">
+                {row.shouldPay}
+              </td>
+              <td className="px-6 py-4">
+                {row.amount.toFixed(2)}
+              </td>
+            </tr>
           ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+        </tbody>
+      </table>
+    </div>
   )
 }

@@ -1,0 +1,431 @@
+Outputs:
+  deploymentaccount:
+    Value: "971422695415"
+    Export:
+      Name: DeploymentAccount
+  deploymentregion:
+    Value: ap-southeast-1
+    Export:
+      Name: DeploymentRegion
+  restapiEndpointC67DEFEA:
+    Value:
+      Fn::Join:
+        - ""
+        - - https://
+          - Ref: restapi39D779F7
+          - .execute-api.ap-southeast-1.
+          - Ref: AWS::URLSuffix
+          - /
+          - Ref: restapiDeploymentStageprod0335F613
+          - /
+  createsplitendpoint:
+    Value:
+      Fn::Join:
+        - ""
+        - - https://
+          - Ref: restapi39D779F7
+          - .execute-api.ap-southeast-1.
+          - Ref: AWS::URLSuffix
+          - /
+          - Ref: restapiDeploymentStageprod0335F613
+          - /api/v1/create-split
+    Export:
+      Name: CreateSplitEndpoint
+  getsplitendpoint:
+    Value:
+      Fn::Join:
+        - ""
+        - - https://
+          - Ref: restapi39D779F7
+          - .execute-api.ap-southeast-1.
+          - Ref: AWS::URLSuffix
+          - /
+          - Ref: restapiDeploymentStageprod0335F613
+          - /api/v1/splits/{splitId}
+    Export:
+      Name: GetSplitEndpoint
+  updatesplitendpoint:
+    Value:
+      Fn::Join:
+        - ""
+        - - https://
+          - Ref: restapi39D779F7
+          - .execute-api.ap-southeast-1.
+          - Ref: AWS::URLSuffix
+          - /
+          - Ref: restapiDeploymentStageprod0335F613
+          - /api/v1/splits/{splitId}
+    Export:
+      Name: UpdateSplitEndpoint
+Resources:
+  ddbtable7F3F6F3F:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: split_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: split_id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      TableName: OpenSplitServerStack-splits
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/ddb-table/Resource
+  createsplitServiceRoleF0D5D790:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/create-split/ServiceRole/Resource
+  createsplitServiceRoleDefaultPolicy314D597B:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - dynamodb:BatchGetItem
+              - dynamodb:ConditionCheckItem
+              - dynamodb:DescribeTable
+              - dynamodb:GetItem
+              - dynamodb:GetRecords
+              - dynamodb:GetShardIterator
+              - dynamodb:Query
+              - dynamodb:Scan
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - ddbtable7F3F6F3F
+                  - Arn
+              - Ref: AWS::NoValue
+        Version: "2012-10-17"
+      PolicyName: createsplitServiceRoleDefaultPolicy314D597B
+      Roles:
+        - Ref: createsplitServiceRoleF0D5D790
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/create-split/ServiceRole/DefaultPolicy/Resource
+  createsplitDAD0A5F4:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-971422695415-ap-southeast-1
+        S3Key: 134b4edbdbe977994209e2f95fbc8370cf4a7de7e77dae6651971ad554ad8918.zip
+      Environment:
+        Variables:
+          TABLE_NAME:
+            Ref: ddbtable7F3F6F3F
+      FunctionName: OpenSplitServerStack-create-split
+      Handler: create-split/handler.handle
+      Role:
+        Fn::GetAtt:
+          - createsplitServiceRoleF0D5D790
+          - Arn
+      Runtime: nodejs22.x
+    DependsOn:
+      - createsplitServiceRoleDefaultPolicy314D597B
+      - createsplitServiceRoleF0D5D790
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/create-split/Resource
+      aws:asset:path: /Users/tharinduepasingha/Documents/DEV/open-split/open-split-server/lambda
+      aws:asset:is-bundled: false
+      aws:asset:property: Code
+  createsplitLogGroup0BEC1C4C:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName:
+        Fn::Join:
+          - ""
+          - - /aws/lambda/
+            - Ref: createsplitDAD0A5F4
+      RetentionInDays: 731
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/create-split/LogGroup/Resource
+  restapi39D779F7:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: OpenSplitServerStack-APIs
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/rest-api/Resource
+  restapiDeploymentD3722A4C0e8d1ed4cd3e98d98030b1b85ba3f02d:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      Description: Automatically created by the RestApi construct
+      RestApiId:
+        Ref: restapi39D779F7
+    DependsOn:
+      - restapi955FE7EE
+      - restapiv1createsplitPOSTE4581646
+      - restapiv1createsplitE62F184C
+      - restapiv1EAA00F75
+      - restapiv1splitssplitIdGETCB132800
+      - restapiv1splitssplitIdPUT0522D45A
+      - restapiv1splitssplitId6F8F1344
+      - restapiv1splits49883324
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/rest-api/Deployment/Resource
+      aws:cdk:do-not-refactor: true
+  restapiDeploymentStageprod0335F613:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      DeploymentId:
+        Ref: restapiDeploymentD3722A4C0e8d1ed4cd3e98d98030b1b85ba3f02d
+      RestApiId:
+        Ref: restapi39D779F7
+      StageName: prod
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/rest-api/DeploymentStage.prod/Resource
+  restapi955FE7EE:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+          - restapi39D779F7
+          - RootResourceId
+      PathPart: api
+      RestApiId:
+        Ref: restapi39D779F7
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/rest-api/Default/api/Resource
+  restapiv1EAA00F75:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Ref: restapi955FE7EE
+      PathPart: v1
+      RestApiId:
+        Ref: restapi39D779F7
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/rest-api/Default/api/v1/Resource
+  restapiv1createsplitE62F184C:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Ref: restapiv1EAA00F75
+      PathPart: create-split
+      RestApiId:
+        Ref: restapi39D779F7
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/rest-api/Default/api/v1/create-split/Resource
+  restapiv1createsplitPOSTApiPermissionOpenSplitServerStackrestapiBBBB8BB8POSTapiv1createsplit941377F8:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - createsplitDAD0A5F4
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:ap-southeast-1:971422695415:"
+            - Ref: restapi39D779F7
+            - /
+            - Ref: restapiDeploymentStageprod0335F613
+            - /POST/api/v1/create-split
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/rest-api/Default/api/v1/create-split/POST/ApiPermission.OpenSplitServerStackrestapiBBBB8BB8.POST..api.v1.create-split
+  restapiv1createsplitPOSTApiPermissionTestOpenSplitServerStackrestapiBBBB8BB8POSTapiv1createsplit2AD5C213:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - createsplitDAD0A5F4
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:ap-southeast-1:971422695415:"
+            - Ref: restapi39D779F7
+            - /test-invoke-stage/POST/api/v1/create-split
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/rest-api/Default/api/v1/create-split/POST/ApiPermission.Test.OpenSplitServerStackrestapiBBBB8BB8.POST..api.v1.create-split
+  restapiv1createsplitPOSTE4581646:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: POST
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - arn:aws:apigateway:ap-southeast-1:lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - createsplitDAD0A5F4
+                  - Arn
+              - /invocations
+      ResourceId:
+        Ref: restapiv1createsplitE62F184C
+      RestApiId:
+        Ref: restapi39D779F7
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/rest-api/Default/api/v1/create-split/POST/Resource
+  restapiv1splits49883324:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Ref: restapiv1EAA00F75
+      PathPart: splits
+      RestApiId:
+        Ref: restapi39D779F7
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/rest-api/Default/api/v1/splits/Resource
+  restapiv1splitssplitId6F8F1344:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Ref: restapiv1splits49883324
+      PathPart: "{splitId}"
+      RestApiId:
+        Ref: restapi39D779F7
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/rest-api/Default/api/v1/splits/{splitId}/Resource
+  restapiv1splitssplitIdGETApiPermissionOpenSplitServerStackrestapiBBBB8BB8GETapiv1splitssplitIdB9BEEA40:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - createsplitDAD0A5F4
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:ap-southeast-1:971422695415:"
+            - Ref: restapi39D779F7
+            - /
+            - Ref: restapiDeploymentStageprod0335F613
+            - /GET/api/v1/splits/*
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/rest-api/Default/api/v1/splits/{splitId}/GET/ApiPermission.OpenSplitServerStackrestapiBBBB8BB8.GET..api.v1.splits.{splitId}
+  restapiv1splitssplitIdGETApiPermissionTestOpenSplitServerStackrestapiBBBB8BB8GETapiv1splitssplitId2AB11660:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - createsplitDAD0A5F4
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:ap-southeast-1:971422695415:"
+            - Ref: restapi39D779F7
+            - /test-invoke-stage/GET/api/v1/splits/*
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/rest-api/Default/api/v1/splits/{splitId}/GET/ApiPermission.Test.OpenSplitServerStackrestapiBBBB8BB8.GET..api.v1.splits.{splitId}
+  restapiv1splitssplitIdGETCB132800:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: GET
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - arn:aws:apigateway:ap-southeast-1:lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - createsplitDAD0A5F4
+                  - Arn
+              - /invocations
+      ResourceId:
+        Ref: restapiv1splitssplitId6F8F1344
+      RestApiId:
+        Ref: restapi39D779F7
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/rest-api/Default/api/v1/splits/{splitId}/GET/Resource
+  restapiv1splitssplitIdPUTApiPermissionOpenSplitServerStackrestapiBBBB8BB8PUTapiv1splitssplitId0BA65AE6:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - createsplitDAD0A5F4
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:ap-southeast-1:971422695415:"
+            - Ref: restapi39D779F7
+            - /
+            - Ref: restapiDeploymentStageprod0335F613
+            - /PUT/api/v1/splits/*
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/rest-api/Default/api/v1/splits/{splitId}/PUT/ApiPermission.OpenSplitServerStackrestapiBBBB8BB8.PUT..api.v1.splits.{splitId}
+  restapiv1splitssplitIdPUTApiPermissionTestOpenSplitServerStackrestapiBBBB8BB8PUTapiv1splitssplitId5F4AFC4C:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - createsplitDAD0A5F4
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:ap-southeast-1:971422695415:"
+            - Ref: restapi39D779F7
+            - /test-invoke-stage/PUT/api/v1/splits/*
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/rest-api/Default/api/v1/splits/{splitId}/PUT/ApiPermission.Test.OpenSplitServerStackrestapiBBBB8BB8.PUT..api.v1.splits.{splitId}
+  restapiv1splitssplitIdPUT0522D45A:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: PUT
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - arn:aws:apigateway:ap-southeast-1:lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - createsplitDAD0A5F4
+                  - Arn
+              - /invocations
+      ResourceId:
+        Ref: restapiv1splitssplitId6F8F1344
+      RestApiId:
+        Ref: restapi39D779F7
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/rest-api/Default/api/v1/splits/{splitId}/PUT/Resource
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Analytics: v2:deflate64:H4sIAAAAAAAA/9VVyW7bMBD9luoY0GrrIpfc7G4wuhmOb4YRjMWxzJgiCZJKKgj69w4pSlZgoEBPQU8kZ583T6N5Pn9/m797A89uVvDzTIpD3t57KM7s41H9qr2pPSPlQ8sbBZXmpN7CQeKuzXw4f0KF2V12k7HMgPXCC62+YZPdtZm6qHxjwvU+67p9CBxDdExCdeCQt19qVQRHCnpM10lcWysvxtcJFJdo06vQfFCgehJWqwqVj5KOtRlw/nkq3kXLm2zflzHkDfc12ko4R6+OCajydqNjl+BcXSFfxpaMFaoQBuSiKHSdErFkExwWMV7Kn1WgoES+1lIUAh3lb1/ImoVNtvtU7VavhxS9RfBJWk9jOa2UFApHXezlr8rYaCiN9fIIweCw1UFzFedazDmRwmNA0aWSYuA+ZsfchwcCAb3LF+Ggd76sizP6JTjc7ZnUpcvb77r8anVtCAaZruOc+3iDRcfAiJIyPkNDfpEnG3R+YQQ5czxCLf1KeSwtjIgTVXqTCXle0sVY/ZuQOYJ0GPr6J/seyd6DfUIjdRPwiPW4wgozKYSqH0vyINTF3E3JudXUsChArvhk0P+DPIJx6YoRPUqMUAyiyVSjkhF0urYFRkoEZo0S8qPlgeP3ZMCf1rRNRqheRTvMO5bIfqA/ab6LnImSgTDem16XBOKKlToy4zL4V48QO+sduu4yhWE5svgNh6EJVXZM0Y7NH93bp/ltPqd/xaMTYpaWcr7pzz/3VLRwSAYAAA==
+    Metadata:
+      aws:cdk:path: OpenSplitServerStack/CDKMetadata/Default
+Parameters:
+  BootstrapVersion:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /cdk-bootstrap/hnb659fds/version
+    Description: Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]
+

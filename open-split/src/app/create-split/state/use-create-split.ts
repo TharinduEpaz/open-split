@@ -1,14 +1,43 @@
 import { create } from 'zustand'
+import {devtools} from 'zustand/middleware'
 
-export type CreateSplitState = {
-  createSplitData: Record<string, any>
-  setCreateSplitData: (data: Record<string, any>) => void
+interface CreateSplitData {
+  splitName: string
+  people: {
+    firstName: string
+    email: string
+    bankDetails: {
+      accName: string
+      accountNo: string
+      bank: string
+      branch: string
+    }
+  }[]
+  tasks: {
+    taskName: string
+    amount: number
+    responsiblePeople: {
+      personId: string
+      amount: number
+    }[]
+  }[]
 }
 
-export const useCreateSplit = create<CreateSplitState>((set) => ({
-  createSplitData: {},
-  setCreateSplitData: (data: Record<string, any>) =>
-    set((state) => ({
-      createSplitData: { ...state.createSplitData, ...data },
-    })),
-}))
+export type CreateSplitState = {
+  createSplitData: CreateSplitData
+  setCreateSplitData: (data: Partial<CreateSplitData>) => void
+}
+
+export const useCreateSplit = create<CreateSplitState>()(
+  devtools((set) => ({
+    createSplitData: {
+      splitName: '',
+      people: [],
+      tasks: [],
+    },
+    setCreateSplitData: (data) =>
+      set((state) => ({
+        createSplitData: { ...state.createSplitData, ...data },
+      })),
+  }))
+)

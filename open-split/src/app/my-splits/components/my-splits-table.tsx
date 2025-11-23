@@ -1,10 +1,4 @@
 import { OutlinedButton } from '@/components/ui/common/outlined-button'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
 import { useNavigate } from '@tanstack/react-router'
 import { KanbanSquare } from 'lucide-react'
 
@@ -29,38 +23,52 @@ export default function MySplitsTable() {
   }
 
   return (
-    <TableContainer  className='rounded-none'>
-      <Table sx={{ minWidth: 650 }} aria-label="splits table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Split Name</TableCell>
-            <TableCell align="center">Date</TableCell>
-            <TableCell align="right">Action</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {splits.map((split) => (
-            <TableRow
+    <div className="relative overflow-x-auto bg-background-default shadow-xs rounded-base border border-default">
+      <table className="w-full text-sm text-left rtl:text-right text-body">
+        <caption className="p-5 text-lg font-medium text-left rtl:text-right text-heading">
+          My Splits
+          <p className="mt-1.5 text-sm font-normal text-body">Browse a list of your expense splits. View details and manage your shared expenses.</p>
+        </caption>
+        <thead className="text-sm text-body bg-neutral-secondary-medium border-b border-t border-default-medium">
+          <tr>
+            <th scope="col" className="px-6 py-3 font-medium">
+              Split Name
+            </th>
+            <th scope="col" className="px-6 py-3 font-medium">
+              Date
+            </th>
+            <th scope="col" className="px-6 py-3 font-medium">
+              <span className="sr-only">Action</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {splits.map((split, index) => (
+            <tr
               key={split.id}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              className={`bg-neutral-primary-soft ${
+                index !== splits.length - 1 ? 'border-b border-default' : ''
+              }`}
             >
-              <TableCell component="th" scope="row">
+              <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap">
                 {split.name}
-              </TableCell>
-              <TableCell align="center">{split.date}</TableCell>
-              <TableCell align="right">
-                <OutlinedButton
+              </th>
+              <td className="px-6 py-4">
+                {split.date}
+              </td>
+              <td className="px-6 py-4 text-right">
+                <OutlinedButton 
                   size="small"
                   startIcon={<KanbanSquare size={16} />}
                   onClick={() => handleViewSplit(split.id)}
                 >
                   View Split Details
                 </OutlinedButton>
-              </TableCell>
-            </TableRow>
+              </td>
+            </tr>
           ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+        </tbody>
+      </table>
+    </div>
   )
 }

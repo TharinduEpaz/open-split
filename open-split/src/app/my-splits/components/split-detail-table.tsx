@@ -1,12 +1,4 @@
 import { FilledButton } from '@/components/ui/common/filled-button'
-import { Typography } from '@mui/material'
-import Chip from '@mui/material/Chip'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
 import { useNavigate } from '@tanstack/react-router'
 import { Handshake } from 'lucide-react'
 
@@ -36,8 +28,17 @@ const getStatusLabel = (status: string): string => {
   }
 }
 
-const getStatusColor = (status: string): "success" | "default" => {
-  return status === 'fully-settled' ? 'success' : 'default'
+const getStatusBadgeClasses = (status: string): string => {
+  switch (status) {
+    case 'fully-settled':
+      return 'inline-flex items-center rounded-md bg-green-400/10 px-2 py-1 text-xs font-medium text-green-400 inset-ring inset-ring-green-500/20'
+    case 'unsettled':
+      return 'inline-flex items-center rounded-md bg-red-400/10 px-2 py-1 text-xs font-medium text-red-400 inset-ring inset-ring-red-400/20'
+    case 'partially-settled':
+      return 'inline-flex items-center rounded-md bg-yellow-400/10 px-2 py-1 text-xs font-medium text-yellow-500 inset-ring inset-ring-yellow-400/20'
+    default:
+      return 'inline-flex items-center rounded-md bg-gray-400/10 px-2 py-1 text-xs font-medium text-gray-400 inset-ring inset-ring-gray-400/20'
+  }
 }
 
 export default function SplitDetailTable() {
@@ -54,49 +55,54 @@ export default function SplitDetailTable() {
   }
 
   return (
-    <>
-      <Typography variant="subtitle1" className="p-2">
-        Please Select your name and settle the pending amount
-      </Typography>
-      <TableContainer >
-        <Table sx={{ minWidth: 650 }} aria-label="split details table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell align="center">Status</TableCell>
-              <TableCell align="right">Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {people.map((person) => (
-              <TableRow
-                key={person.id}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {person.name}
-                </TableCell>
-                <TableCell align="center">
-                  <Chip
-                    label={getStatusLabel(person.status)}
-                    size="small"
-                    color={getStatusColor(person.status)}
-                  />
-                </TableCell>
-                <TableCell align="right">
-                  <FilledButton
-                    size="small"
-                    startIcon={<Handshake size={16} />}
-                    onClick={() => handleViewPerson(person.name)}
-                  >
-                  Settle Debts 
-                  </FilledButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
+    <div className="relative overflow-x-auto bg-background-default shadow-xs rounded-base border border-default">
+      <table className="w-full text-sm text-left rtl:text-right text-body">
+        <caption className="p-5 text-lg font-medium text-left rtl:text-right text-heading">
+          Split Details
+          <p className="mt-1.5 text-sm font-normal text-body">Please select your name and settle the pending amount.</p>
+        </caption>
+        <thead className="text-sm text-body bg-neutral-secondary-medium border-b border-t border-default-medium">
+          <tr>
+            <th scope="col" className="px-6 py-3 font-medium">
+              Name
+            </th>
+            <th scope="col" className="px-6 py-3 font-medium">
+              Status
+            </th>
+            <th scope="col" className="px-6 py-3 font-medium">
+              <span className="sr-only">Action</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {people.map((person, index) => (
+            <tr
+              key={person.id}
+              className={`bg-neutral-primary-soft ${
+                index !== people.length - 1 ? 'border-b border-default' : ''
+              }`}
+            >
+              <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap">
+                {person.name}
+              </th>
+              <td className="px-6 py-4">
+                <span className={getStatusBadgeClasses(person.status)}>
+                  {getStatusLabel(person.status)}
+                </span>
+              </td>
+              <td className="px-6 py-4 text-right">
+                <FilledButton
+                  size="small"
+                  startIcon={<Handshake size={16} />}
+                  onClick={() => handleViewPerson(person.name)}
+                >
+                  Settle Debts
+                </FilledButton>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }

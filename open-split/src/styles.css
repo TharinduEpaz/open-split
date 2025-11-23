@@ -1,10 +1,145 @@
 @import 'tailwindcss';
 
+@theme {
+  /* Theme colors from main.tsx */
+  /* colors = ["#3b3e5a", "#ed6b5a", "#ece6ce", "#f7ac68"] */
+  
+  /* Background colors - matching theme */
+  --color-background-default: #ffffff; /* colors[2] - theme.background.default */
+  --color-neutral-primary-soft: #f5f5f5; /* Light neutral for table rows */
+  --color-neutral-secondary-medium: #e5e5e5; /* Medium neutral for table header */
+  
+  /* Text colors - matching theme */
+  --color-heading: #3b3e5a; /* colors[0] - theme.text.primary */
+  --color-body: #3b3e5a; /* colors[0] - theme.text.primary (or use secondary for variation) */
+  --color-fg-brand: #ed6b5a; /* colors[1] - theme.secondary.main */
+  
+  /* Border colors - subtle variations of theme */
+  --color-default: rgba(59, 62, 90, 0.1); /* Light version of primary */
+  --color-default-medium: rgba(59, 62, 90, 0.2); /* Medium version of primary */
+  
+  /* Shadow */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  
+  /* Border radius - matching theme.shape.borderRadius (8px = 0.5rem) */
+  --radius-base: 0.5rem;
+}
+
+/* Custom utility classes for background colors */
+.bg-background-default {
+  background-color: var(--color-background-default);
+}
+
+.bg-neutral-primary-soft {
+  background-color: var(--color-neutral-primary-soft);
+}
+
+.bg-neutral-secondary-medium {
+  background-color: var(--color-neutral-secondary-medium);
+}
+
+/* Custom utility classes for text colors */
+.text-body {
+  color: var(--color-body);
+}
+
+.text-heading {
+  color: var(--color-heading);
+}
+
+.text-fg-brand {
+  color: var(--color-fg-brand);
+}
+
+/* Brand color classes for buttons */
+.bg-brand {
+  background-color: var(--color-fg-brand); /* #ed6b5a - theme.secondary.main */
+}
+
+.bg-brand-strong {
+  background-color: #d45547; /* Darker shade of brand */
+}
+
+.focus\:ring-brand-medium:focus {
+  --tw-ring-opacity: 0.5;
+  --tw-ring-color: rgb(237 107 90 / var(--tw-ring-opacity));
+}
+
+.ring-brand-medium {
+  --tw-ring-opacity: 0.5;
+  --tw-ring-color: rgb(237 107 90 / var(--tw-ring-opacity));
+}
+
+/* Custom utility classes for border colors */
+.border-default {
+  border-color: var(--color-default);
+}
+
+.border-default-medium {
+  border-color: var(--color-default-medium);
+}
+
+.border-t {
+  border-top-width: 1px;
+}
+
+.border-b {
+  border-bottom-width: 1px;
+}
+
+/* Custom utility classes for shadows and radius */
+.shadow-xs {
+  box-shadow: var(--shadow-xs);
+}
+
+.rounded-base {
+  border-radius: var(--radius-base);
+}
+
+/* Inset ring utility class for badges */
+.inset-ring {
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+
+/* Inset ring color variants - Tailwind v4 should handle arbitrary values */
+/* If these don't work, use the specific classes below */
+[class*="inset-ring-gray-400"] {
+  box-shadow: inset 0 0 0 1px rgb(156 163 175 / 0.2);
+}
+
+[class*="inset-ring-red-400"] {
+  box-shadow: inset 0 0 0 1px rgb(248 113 113 / 0.2);
+}
+
+[class*="inset-ring-yellow-400"] {
+  box-shadow: inset 0 0 0 1px rgb(250 204 21 / 0.2);
+}
+
+[class*="inset-ring-green-500"] {
+  box-shadow: inset 0 0 0 1px rgb(34 197 94 / 0.2);
+}
+
+[class*="inset-ring-blue-400"] {
+  box-shadow: inset 0 0 0 1px rgb(96 165 250 / 0.3);
+}
+
+[class*="inset-ring-indigo-400"] {
+  box-shadow: inset 0 0 0 1px rgb(129 140 248 / 0.3);
+}
+
+[class*="inset-ring-purple-400"] {
+  box-shadow: inset 0 0 0 1px rgb(192 132 252 / 0.3);
+}
+
+[class*="inset-ring-pink-400"] {
+  box-shadow: inset 0 0 0 1px rgb(244 114 182 / 0.2);
+}
+
 html,
 body {
   @apply m-0;
   height: 100%;
-  background-color: #ece6ce; /* Match theme background.default */
+  background-color: #f0f0ee; /* White background for all pages */
   font-family:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
