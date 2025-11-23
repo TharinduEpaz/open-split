@@ -86,7 +86,14 @@ export default function AddPeopleForm() {
   }, [splitNameForm.state.isSubmitted, peopleForm.state.isSubmitted])
 
   return (
-    <Box className="mt-12" maxWidth={'400px'} sx={{ pb: 4 }}>
+    <Box 
+      className="mt-12" 
+      sx={{ 
+        pb: 4,
+        maxWidth: { xs: '100%', sm: '400px' },
+        width: '100%',
+      }}
+    >
       {/* Split Name Section */}
       <Box sx={{ mb: 4, pb: 3, borderBottom: '1px solid #e5e7eb' }}>
         <Typography variant="h6" sx={{ mb: 2 }}>

@@ -67,7 +67,14 @@ export default function AddTaskForm() {
   }
 
   return (
-    <Box className="mt-12" maxWidth={'400px'} sx={{ pb: 4 }}>
+    <Box 
+      className="mt-12" 
+      sx={{ 
+        pb: 4,
+        maxWidth: { xs: '100%', sm: '400px' },
+        width: '100%',
+      }}
+    >
       <form
         onSubmit={(e) => {
           e.preventDefault()

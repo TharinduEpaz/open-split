@@ -18,12 +18,15 @@ const modalStyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: { xs: '90%', sm: 400 },
+  maxWidth: '90vw',
   bgcolor: 'background.paper',
   borderRadius: 2,
   boxShadow: 24,
-  p: 4,
+  p: { xs: 2, sm: 4 },
   outline: 'none',
+  maxHeight: '90vh',
+  overflow: 'auto',
 }
 
 interface Task {
@@ -40,16 +43,49 @@ function AddTask() {
 
   return (
     <>
-      <Stack direction={'row'}>
-        <Box width={'50%'}>
+      <Stack 
+        direction={{ xs: 'column', md: 'row' }}
+        spacing={{ xs: 2, md: 0 }}
+        sx={{ width: '100%' }}
+      >
+        <Box 
+          width={{ xs: '100%', md: '50%' }}
+          sx={{ pr: { xs: 0, md: 2 } }}
+        >
           <AddTaskForm />
         </Box>
-        <Box width={'50%'}>
-          <Stack direction={'column'} className="mt-16 p-4 gap-4">
-            {tasks.map((task, index) => (
-              <TaskCard key={index} name={task.name} amount={task.amount} />
-            ))}
-          </Stack>
+        <Box 
+          width={{ xs: '100%', md: '50%' }}
+          className="border overflow-auto rounded-lg border-gray-200"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: { xs: '300px', md: '400px' },
+            m: { xs: 0, md: 2 },
+            mt: { xs: 2, md: 2 },
+          }}
+        >
+          {tasks.length === 0 ? (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1,
+                height: '100%',
+              }}
+            >
+              <Typography variant="caption" className="text-gray-500">
+                No tasks added yet
+              </Typography>
+            </Box>
+          ) : (
+            <Stack direction={'column'} className="p-4 gap-4">
+              {tasks.map((task, index) => (
+                <TaskCard key={index} name={task.name} amount={task.amount} />
+              ))}
+            </Stack>
+          )}
         </Box>
       </Stack>
     </>
@@ -74,7 +110,11 @@ function TaskCard({ name, amount }: TaskCardProps) {
   return (
     <>
       <Card
-        className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50"
+        className="flex items-center cursor-pointer hover:bg-gray-50"
+        sx={{
+          gap: { xs: 2, sm: 4 },
+          p: { xs: 2, sm: 4 },
+        }}
         onClick={handleOpen}
       >
         <Avatar sx={{ bgcolor: 'primary.main' }}>

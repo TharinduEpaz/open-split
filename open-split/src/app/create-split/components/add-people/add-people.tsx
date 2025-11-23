@@ -19,12 +19,15 @@ const modalStyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: { xs: '90%', sm: 400 },
+  maxWidth: '90vw',
   bgcolor: 'background.paper',
   borderRadius: 2,
   boxShadow: 24,
-  p: 4,
+  p: { xs: 2, sm: 4 },
   outline: 'none',
+  maxHeight: '90vh',
+  overflow: 'auto',
 }
 
 
@@ -33,17 +36,26 @@ function AddPeople() {
 
   return (
     <>
-      <Stack direction={'row'}>
-        <Box width={'50%'}>
+      <Stack 
+        direction={{ xs: 'column', md: 'row' }}
+        spacing={{ xs: 2, md: 0 }}
+        sx={{ width: '100%' }}
+      >
+        <Box 
+          width={{ xs: '100%', md: '50%' }}
+          sx={{ pr: { xs: 0, md: 2 } }}
+        >
           <AddPeopleForm />
         </Box>
         <Box 
-          width={'50%'} 
-          className="border m-4 overflow-auto rounded-lg border-gray-200"
+          width={{ xs: '100%', md: '50%' }}
+          className="border overflow-auto rounded-lg border-gray-200"
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            minHeight: '400px',
+            minHeight: { xs: '300px', md: '400px' },
+            m: { xs: 0, md: 2 },
+            mt: { xs: 2, md: 2 },
           }}
         >
           {createSplitData.people && createSplitData.people.length === 0 ? (
@@ -107,7 +119,11 @@ function PeopleCard({ name, email, bankDetails }: PeopleCardProps) {
   return (
     <>
       <Card
-        className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50"
+        className="flex items-center cursor-pointer hover:bg-gray-50"
+        sx={{
+          gap: { xs: 2, sm: 4 },
+          p: { xs: 2, sm: 4 },
+        }}
         onClick={handleOpen}
       >
         <Avatar>{getInitials(name)}</Avatar>
