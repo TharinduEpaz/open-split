@@ -1,11 +1,9 @@
 import { FieldInfo } from '@/components/form/field-info'
 import { FilledButton } from '@/components/ui/common/filled-button'
 import {
-  Alert,
   Box,
   FormControlLabel,
   FormGroup,
-  Snackbar,
   Switch,
   TextField,
   Typography,
@@ -13,6 +11,7 @@ import {
 import type { AnyFieldApi } from '@tanstack/react-form'
 import { useForm } from '@tanstack/react-form'
 import { PlusIcon } from 'lucide-react'
+import { toast } from 'sonner'
 import { useCreateSplit } from '../../state/use-create-split'
 import { useLoadingBar } from '@/hooks/use-loading-bar'
 import { useEffect } from 'react'
@@ -23,14 +22,10 @@ export default function AddPeopleForm() {
     createSplitData,
     showBankDetails,
     setShowBankDetails,
-    showToast,
-    setShowToast,
-    addedPersonName,
-    setAddedPersonName,
     setIsFormSubmitted,
   } = useCreateSplit()
   const { start: startLoading, complete: completeLoading } = useLoadingBar()
-  
+
   // Compute splitNameSubmitted from store
   const splitNameSubmitted = !!createSplitData.splitName
 
@@ -49,6 +44,7 @@ export default function AddPeopleForm() {
   // Form for people info (can submit multiple times)
   const peopleForm = useForm({
     defaultValues: {
+      id: crypto.randomUUID(),
       firstName: '',
       email: '',
       bankDetails: {
@@ -66,18 +62,14 @@ export default function AddPeopleForm() {
         setCreateSplitData({
           people: [...existingPeople, value],
         })
-        setAddedPersonName(value.firstName)
-        setShowToast(true)
+        toast.success(`${value.firstName} has been added successfully!`)
         peopleForm.reset()
         setShowBankDetails(false)
       } finally {
-        // Small delay to show the loading bar
-        setTimeout(() => {
-          completeLoading()
-        }, 400)
+        completeLoading()
       }
     },
-  })  
+  })
 
   useEffect(() => {
     if (splitNameForm.state.isSubmitted && peopleForm.state.isSubmitted) {
@@ -86,9 +78,9 @@ export default function AddPeopleForm() {
   }, [splitNameForm.state.isSubmitted, peopleForm.state.isSubmitted])
 
   return (
-    <Box 
-      className="mt-12" 
-      sx={{ 
+    <Box
+      className="mt-12"
+      sx={{
         pb: 4,
         maxWidth: { xs: '100%', sm: '400px' },
         width: '100%',
@@ -151,10 +143,7 @@ export default function AddPeopleForm() {
             <splitNameForm.Subscribe
               selector={(state) => [state.canSubmit, state.isSubmitting]}
               children={([canSubmit, isSubmitting]) => (
-                <FilledButton
-                  type="submit"
-                  disabled={!canSubmit}
-                >
+                <FilledButton type="submit" disabled={!canSubmit}>
                   {isSubmitting ? 'Saving...' : 'Save Split Name'}
                 </FilledButton>
               )}
@@ -194,7 +183,8 @@ export default function AddPeopleForm() {
                 onChangeAsync: async ({ value }) => {
                   await new Promise((resolve) => setTimeout(resolve, 1000))
                   return (
-                    value.includes('error') && 'No "error" allowed in first name'
+                    value.includes('error') &&
+                    'No "error" allowed in first name'
                   )
                 },
               }}
@@ -260,7 +250,7 @@ export default function AddPeopleForm() {
 
           {showBankDetails && (
             <Box>
-              <Typography variant="subtitle2" sx={{  mt: 4 }}>
+              <Typography variant="subtitle2" sx={{ mt: 4 }}>
                 Bank Details
               </Typography>
               <FormGroup>
@@ -414,22 +404,6 @@ export default function AddPeopleForm() {
           />
         </form>
       </Box>
-
-      {/* Toast notification for successful person addition */}
-      <Snackbar
-        open={showToast}
-        autoHideDuration={3000}
-        onClose={() => setShowToast(false)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <Alert
-          onClose={() => setShowToast(false)}
-          severity="success"
-          sx={{ width: '100%' }}
-        >
-          {addedPersonName} has been added successfully!
-        </Alert>
-      </Snackbar>
     </Box>
   )
 }

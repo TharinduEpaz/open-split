@@ -17,6 +17,7 @@ import { routeTree } from './routeTree.gen'
 
 import reportWebVitals from './reportWebVitals.ts'
 import './styles.css'
+import { Toaster } from 'sonner'
 
 // Create a new router instance
 const router = createRouter({
@@ -52,13 +53,11 @@ const theme = createTheme({
     },
     background: {
       default: colors[2],
-      
     },
     
     text: {
       primary: colors[0],
       secondary: colors[3],
-      // secondary: colors[],
     },
    
   },
@@ -88,6 +87,7 @@ if (rootElement && !rootElement.innerHTML) {
       <ThemeProvider theme={theme}>
         <StyledEngineProvider enableCssLayer>
           <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
+          <Toaster position="top-right" />
           {/* Your app */}
           <RouterProvider router={router} />
         </StyledEngineProvider>

@@ -12,6 +12,7 @@ import { Trash2 } from 'lucide-react'
 import * as React from 'react'
 import AddTaskForm from './add-task-form'
 import { SplitSubtitle } from '@/components/ui/common/split-subtitle'
+import { useCreateSplit } from '../../state/use-create-split'
 
 const modalStyle = {
   position: 'absolute',
@@ -29,17 +30,8 @@ const modalStyle = {
   overflow: 'auto',
 }
 
-interface Task {
-  name: string
-  amount: number
-}
-
 function AddTask() {
-  const tasks: Array<Task> = [
-    { name: 'Dinner', amount: 150.0 },
-    { name: 'Movie Tickets', amount: 45.5 },
-    { name: 'Transportation', amount: 30.0 },
-  ]
+  const { createSplitData } = useCreateSplit()
 
   return (
     <>
@@ -56,7 +48,7 @@ function AddTask() {
         </Box>
         <Box 
           width={{ xs: '100%', md: '50%' }}
-          className="border overflow-auto rounded-lg border-gray-200"
+          className="mt-14 overflow-auto rounded-lg border-gray-200"
           sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -65,7 +57,7 @@ function AddTask() {
             mt: { xs: 2, md: 2 },
           }}
         >
-          {tasks.length === 0 ? (
+          {createSplitData.tasks && createSplitData.tasks.length === 0 ? (
             <Box
               sx={{
                 display: 'flex',
@@ -81,8 +73,13 @@ function AddTask() {
             </Box>
           ) : (
             <Stack direction={'column'} className="p-4 gap-4">
-              {tasks.map((task, index) => (
-                <TaskCard key={index} name={task.name} amount={task.amount} />
+              {createSplitData.tasks.map((task, index) => (
+                <TaskCard
+                  key={index}
+                  taskName={task.taskName}
+                  amount={task.amount}
+                  people={task.people}
+                />
               ))}
             </Stack>
           )}
@@ -93,18 +90,30 @@ function AddTask() {
 }
 
 interface TaskCardProps {
-  name: string
+  taskName: string
   amount: number
+  people: { id: string; amount: number }[]
 }
 
-function TaskCard({ name, amount }: TaskCardProps) {
+function TaskCard({ taskName, amount, people }: TaskCardProps) {
   const [open, setOpen] = React.useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+  const { createSplitData, setCreateSplitData } = useCreateSplit()
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation()
-    console.log('Delete:', name)
+    // Remove task from state
+    const updatedTasks = createSplitData.tasks.filter(
+      (task) => task.taskName !== taskName
+    )
+    setCreateSplitData({ tasks: updatedTasks })
+  }
+
+  // Get person names from people data
+  const getPersonName = (personId: string) => {
+    const person = createSplitData.people.find((p) => p.id === personId)
+    return person ? person.firstName : 'Unknown'
   }
 
   return (
@@ -118,10 +127,10 @@ function TaskCard({ name, amount }: TaskCardProps) {
         onClick={handleOpen}
       >
         <Avatar sx={{ bgcolor: 'primary.main' }}>
-          {name.charAt(0).toUpperCase()}
+          {taskName.charAt(0).toUpperCase()}
         </Avatar>
         <Stack direction={'column'} sx={{ flex: 1 }}>
-          <SplitSubtitle>{name}</SplitSubtitle>
+          <SplitSubtitle>{taskName}</SplitSubtitle>
           <Typography variant="body2" color="text.secondary">
             ${amount.toFixed(2)}
           </Typography>
@@ -142,17 +151,35 @@ function TaskCard({ name, amount }: TaskCardProps) {
                 <Typography variant="subtitle2" color="text.secondary">
                   Task Name
                 </Typography>
-                <Typography variant="body1">{name}</Typography>
+                <Typography variant="body1">{taskName}</Typography>
               </Box>
               <Divider />
               <Box>
                 <Typography variant="subtitle2" color="text.secondary">
-                  Amount
+                  Total Amount
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: 600 }}>
                   ${amount.toFixed(2)}
                 </Typography>
               </Box>
+              {people && people.length > 0 && (
+                <>
+                  <Divider />
+                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                    Responsible People
+                  </Typography>
+                  {people.map((person, index) => (
+                    <Box key={index}>
+                      <Typography variant="subtitle2" color="text.secondary">
+                        {getPersonName(person.id)}
+                      </Typography>
+                      <Typography variant="body1">
+                        ${person.amount.toFixed(2)}
+                      </Typography>
+                    </Box>
+                  ))}
+                </>
+              )}
             </Stack>
           </Box>
         </Box>

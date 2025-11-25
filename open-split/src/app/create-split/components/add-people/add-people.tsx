@@ -49,7 +49,7 @@ function AddPeople() {
         </Box>
         <Box 
           width={{ xs: '100%', md: '50%' }}
-          className="border overflow-auto rounded-lg border-gray-200"
+          className="overflow-auto border-gray-200 mt-4"
           sx={{
             display: 'flex',
             flexDirection: 'column',

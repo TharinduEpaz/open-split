@@ -1,6 +1,7 @@
 import { FieldInfo } from '@/components/form/field-info'
 import { FilledButton } from '@/components/ui/common/filled-button'
 import { OutlinedButton } from '@/components/ui/common/outlined-button'
+import { useLoadingBar } from '@/hooks/use-loading-bar'
 import {
   Box,
   FormControl,
@@ -18,58 +19,64 @@ import type { AnyFieldApi } from '@tanstack/react-form'
 import { useForm } from '@tanstack/react-form'
 import { PlusIcon, Trash2 } from 'lucide-react'
 import { useState } from 'react'
-
-// Sample people data - in a real app, this would come from the store
-const people = [
-  { id: '1', name: 'Tharindu Epasingha', email: 'epazingha@gmail.com' },
-  { id: '2', name: 'John Doe', email: 'john@example.com' },
-  { id: '3', name: 'Jane Smith', email: 'jane@example.com' },
-]
-
-interface ResponsiblePerson {
-  personId: string
-  amount: string
-}
+import { toast } from 'sonner'
+import { useCreateSplit } from '../../state/use-create-split'
 
 export default function AddTaskForm() {
   const [multiplePeople, setMultiplePeople] = useState(false)
-  const [responsiblePeople, setResponsiblePeople] = useState<
-    Array<ResponsiblePerson>
-  >([{ personId: '', amount: '' }])
-
+  const { createSplitData, setCreateSplitData } = useCreateSplit()
+  const { start: startLoading, complete: completeLoading } = useLoadingBar()
   const form = useForm({
     defaultValues: {
       taskName: '',
       amount: '',
-      responsiblePerson: '',
+      responsiblePeople: [{ personId: '', amount: '' }],
     },
-    // onSubmit: async ({ value }) => {
-    //   // setCreateSplitData(dataToSave)
-    // },
+    onSubmit: async ({ value }) => {
+      startLoading()
+      try {
+        // Validate the total amount with the sum of the responsible people amounts
+        const totalAmount = Number(value.amount) || 0
+        const sumOfPeopleAmounts = value.responsiblePeople.reduce(
+          (acc, person) => acc + Number(person.amount || 0),
+          0,
+        )
+        if (multiplePeople && totalAmount !== sumOfPeopleAmounts) {
+          toast.error('The total amount does not match the sum of the responsible people amounts')
+          return
+        }
+
+        const dataToSave = {
+          taskName: value.taskName,
+          amount: totalAmount,
+          people: value.responsiblePeople.map((person) => ({
+            id: person.personId,
+            // If multiplePeople mode, use person's amount, otherwise use total amount
+            amount: multiplePeople ? Number(person.amount) || 0 : totalAmount,
+          })),
+        }
+        setCreateSplitData({
+          tasks: [...createSplitData.tasks, dataToSave],
+        })
+        toast.success(`${value.taskName} has been added successfully!`)
+        form.reset()
+      } finally {
+          completeLoading()
+      }
+    },
   })
 
-  const addResponsiblePerson = () => {
-    setResponsiblePeople([...responsiblePeople, { personId: '', amount: '' }])
-  }
-
-  const removeResponsiblePerson = (index: number) => {
-    setResponsiblePeople(responsiblePeople.filter((_, i) => i !== index))
-  }
-
-  const updateResponsiblePerson = (
-    index: number,
-    field: keyof ResponsiblePerson,
-    value: string,
-  ) => {
-    const updated = [...responsiblePeople]
-    updated[index][field] = value
-    setResponsiblePeople(updated)
-  }
+  const people = createSplitData.people.map(
+    (person: { id: string; firstName: string }) => ({
+      id: person.id,
+      firstName: person.firstName,
+    }),
+  )
 
   return (
-    <Box 
-      className="mt-12" 
-      sx={{ 
+    <Box
+      className="mt-12"
+      sx={{
         pb: 4,
         maxWidth: { xs: '100%', sm: '400px' },
         width: '100%',
@@ -180,144 +187,190 @@ export default function AddTaskForm() {
             control={
               <Switch
                 checked={multiplePeople}
-                onChange={(e) => setMultiplePeople(e.target.checked)}
+                onChange={(e) => {
+                  const isMultiple = e.target.checked
+                  setMultiplePeople(isMultiple)
+                  // Sync form state when switching modes
+                  const currentPeople = form.state.values.responsiblePeople
+                  if (!isMultiple && currentPeople.length > 1) {
+                    // Switch to single: keep only first person
+                    form.setFieldValue('responsiblePeople', [
+                      currentPeople[0] || { personId: '', amount: '' },
+                    ])
+                  } else if (isMultiple && currentPeople.length === 1) {
+                    // Switch to multiple: ensure we have at least one person with amount
+                    form.setFieldValue('responsiblePeople', [
+                      {
+                        personId: currentPeople[0]?.personId || '',
+                        amount: '',
+                      },
+                    ])
+                  }
+                }}
               />
             }
             label="Multiple People"
           />
         </Box>
 
-        {!multiplePeople ? (
-          <Box sx={{ mb: 2 }}>
-            <form.Field
-              name="responsiblePerson"
-              validators={{
-                onChange: ({ value }) =>
-                  !value ? 'Please select a responsible person' : undefined,
-              }}
-              children={({ state, handleChange, handleBlur }) => (
-                <Box>
-                  <FormControl
-                    variant="standard"
-                    fullWidth
-                    error={state.meta.isTouched && !state.meta.isValid}
-                  >
-                    <InputLabel id="responsible-person-label">
-                      Responsible Person
-                    </InputLabel>
-                    <Select
-                      labelId="responsible-person-label"
-                      id="responsiblePerson"
-                      value={state.value}
-                      onChange={(e) => handleChange(e.target.value)}
-                      onBlur={handleBlur}
-                      label="Responsible Person"
-                    >
-                      <MenuItem value="">
-                        <em>Select a person</em>
-                      </MenuItem>
-                      {people.map((person) => (
-                        <MenuItem key={person.id} value={person.id}>
-                          {person.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  <FieldInfo
-                    field={
-                      {
-                        state,
-                        handleChange,
-                        handleBlur,
-                        name: 'responsiblePerson',
-                      } as AnyFieldApi
-                    }
-                  />
-                </Box>
-              )}
-            />
-          </Box>
-        ) : (
-          <Box sx={{ mb: 2 }}>
+        <Box sx={{ mb: 2 }}>
+          {multiplePeople && (
             <Typography variant="subtitle2" sx={{ mb: 2 }}>
               Responsible People
             </Typography>
-            <Stack spacing={2}>
-              {responsiblePeople.map((person, index) => (
-                <Stack
-                  key={index}
-                  direction="row"
-                  spacing={1}
-                  alignItems="flex-start"
-                >
-                  <FormControl variant="standard" sx={{ flex: 1 }}>
-                    <InputLabel id={`person-${index}-label`}>Person</InputLabel>
-                    <Select
-                      labelId={`person-${index}-label`}
-                      value={person.personId}
-                      onChange={(e) =>
-                        updateResponsiblePerson(
-                          index,
-                          'personId',
-                          e.target.value,
-                        )
-                      }
-                    >
-                      <MenuItem value="">
-                        <em>Select a person</em>
-                      </MenuItem>
-                      {people.map((p) => (
-                        <MenuItem key={p.id} value={p.id}>
-                          {p.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+          )}
+          <form.Field name="responsiblePeople" mode="array">
+            {(field) => {
+              return (
+                <Stack spacing={2}>
+                  {field.state.value.map((_, i) => {
+                    // Get all selected person IDs except the current one
+                    const selectedPersonIds = field.state.value
+                      .map((person, idx) => (idx !== i ? person.personId : null))
+                      .filter((id): id is string => Boolean(id))
 
-                  <TextField
-                    label="Amount"
-                    variant="standard"
-                    type="number"
-                    sx={{ flex: 1 }}
-                    value={person.amount}
-                    onChange={(e) =>
-                      updateResponsiblePerson(index, 'amount', e.target.value)
-                    }
-                    placeholder="Enter amount"
-                    slotProps={{
-                      htmlInput: {
-                        step: '0.01',
-                        min: '0',
-                      },
-                    }}
-                  />
+                    return (
+                      <Stack
+                        key={i}
+                        direction="row"
+                        spacing={1}
+                        alignItems="flex-start"
+                      >
+                        <form.Field
+                          name={`responsiblePeople[${i}].personId`}
+                          validators={{
+                            onChange: ({ value }) =>
+                              !value ? 'Please select a person' : undefined,
+                          }}
+                        >
+                          {(subField) => {
+                            return (
+                              <FormControl
+                                variant="standard"
+                                sx={{ flex: 1 }}
+                                error={
+                                  subField.state.meta.isTouched &&
+                                  !subField.state.meta.isValid
+                                }
+                              >
+                                <InputLabel id={`person-${i}-label`}>
+                                  {multiplePeople
+                                    ? 'Person'
+                                    : 'Responsible Person'}
+                                </InputLabel>
+                                <Select
+                                  labelId={`person-${i}-label`}
+                                  value={subField.state.value}
+                                  onChange={(e) =>
+                                    subField.handleChange(e.target.value)
+                                  }
+                                  onBlur={subField.handleBlur}
+                                >
+                                  <MenuItem value="">
+                                    <em>Select a person</em>
+                                  </MenuItem>
+                                  {people.map((p) => {
+                                    const isDisabled =
+                                      selectedPersonIds.includes(p.id) &&
+                                      subField.state.value !== p.id
+                                    return (
+                                      <MenuItem
+                                        key={p.id}
+                                        value={p.id}
+                                        disabled={isDisabled}
+                                      >
+                                        {p.firstName}
+                                        {isDisabled && ' (already selected)'}
+                                      </MenuItem>
+                                    )
+                                  })}
+                                </Select>
+                              </FormControl>
+                            )
+                          }}
+                        </form.Field>
 
-                  {responsiblePeople.length > 1 && (
-                    <IconButton
-                      color="error"
-                      size="small"
-                      onClick={() => removeResponsiblePerson(index)}
-                      sx={{ mt: 2 }}
-                    >
-                      <Trash2 size={20} />
-                    </IconButton>
+                        {multiplePeople && (
+                          <form.Field
+                            name={`responsiblePeople[${i}].amount`}
+                            validators={{
+                              onChange: ({ value }) => {
+                                if (!value) {
+                                  return 'Amount is required'
+                                }
+                                const numValue = parseFloat(value)
+                                if (isNaN(numValue)) {
+                                  return 'Please enter a valid number'
+                                }
+                                if (numValue <= 0) {
+                                  return 'Amount must be greater than 0'
+                                }
+                                return undefined
+                              },
+                            }}
+                          >
+                            {(subField) => {
+                              return (
+                                <TextField
+                                  label="Amount"
+                                  variant="standard"
+                                  type="number"
+                                  sx={{ flex: 1 }}
+                                  value={subField.state.value}
+                                  onChange={(e) =>
+                                    subField.handleChange(e.target.value)
+                                  }
+                                  onBlur={subField.handleBlur}
+                                  error={
+                                    subField.state.meta.isTouched &&
+                                    !subField.state.meta.isValid
+                                  }
+                                  placeholder="Enter amount"
+                                  slotProps={{
+                                    htmlInput: {
+                                      step: '0.01',
+                                      min: '0',
+                                    },
+                                  }}
+                                />
+                              )
+                            }}
+                          </form.Field>
+                        )}
+
+                        {multiplePeople && field.state.value.length > 1 && (
+                          <IconButton
+                            color="error"
+                            size="small"
+                            onClick={() => field.removeValue(i)}
+                            sx={{ mt: 2 }}
+                            type="button"
+                          >
+                            <Trash2 size={20} />
+                          </IconButton>
+                        )}
+                      </Stack>
+                    )
+                  })}
+                  {multiplePeople && (
+                    <Box>
+                      <OutlinedButton
+                        type="button"
+                        onClick={() =>
+                          field.pushValue({ personId: '', amount: '' })
+                        }
+                        startIcon={<PlusIcon />}
+                        size="small"
+                      >
+                        Add Person
+                      </OutlinedButton>
+                    </Box>
                   )}
                 </Stack>
-              ))}
-
-              <Box>
-                <OutlinedButton
-                  type="button"
-                  onClick={addResponsiblePerson}
-                  startIcon={<PlusIcon />}
-                  size="small"
-                >
-                  Add Person
-                </OutlinedButton>
-              </Box>
-            </Stack>
-          </Box>
-        )}
+              )
+            }}
+          </form.Field>
+        </Box>
 
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}

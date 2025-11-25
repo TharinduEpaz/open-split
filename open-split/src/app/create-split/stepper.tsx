@@ -5,19 +5,21 @@ import StepLabel from '@mui/material/StepLabel'
 import Stepper from '@mui/material/Stepper'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
+import { toast } from 'sonner'
 import AddPeople from './components/add-people/add-people'
 import AddTask from './components/add-task/add-task'
 import { GenerateLink } from './components/generate-link/generate-link'
-import { useCreateSplit } from './state/use-create-split'
+import useSplitAlgorithm from './hooks/use-split-algo'
 
 const steps = ['Add People', 'Add Tasks', 'Generate Link']
 
 export default function CreateSplitStepper() {
   const [activeStep, setActiveStep] = React.useState(0)
   const [skipped, setSkipped] = React.useState(new Set<number>())
-  const { isFormSubmitted : isAddPeopleFormSubmitted } = useCreateSplit()
+  // const { isFormSubmitted : isAddPeopleFormSubmitted } = useCreateSplit()
+  const { validateTask } = useSplitAlgorithm()
 
-  const isNextButtonDisabled = !isAddPeopleFormSubmitted
+  // const isNextButtonDisabled = !isAddPeopleFormSubmitted
 
   const isStepOptional = (step: number) => {
     return step === 99999
@@ -28,6 +30,13 @@ export default function CreateSplitStepper() {
   }
 
   const handleNext = () => {
+    if (activeStep === 1) {
+      const validationResult = validateTask()
+      if (!validationResult.isValid) {
+        toast.error(validationResult.errors.join('\n'),{duration: 10000, position: 'top-right'})
+        return;
+      }
+    }
     let newSkipped = skipped
     if (isStepSkipped(activeStep)) {
       newSkipped = new Set(newSkipped.values())
@@ -124,9 +133,12 @@ export default function CreateSplitStepper() {
                 Skip
               </Button>
             )}
-            <Button onClick={handleNext} disabled={isNextButtonDisabled}>
+             <Button onClick={handleNext}>
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>
+ {/* <Button onClick={handleNext} disabled={isNextButtonDisabled}>
+              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+            </Button> */}
           </Box>
         </React.Fragment>
       )}

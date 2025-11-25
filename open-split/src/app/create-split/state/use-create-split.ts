@@ -4,6 +4,7 @@ import {devtools} from 'zustand/middleware'
 interface CreateSplitData {
   splitName: string
   people: {
+    id: string
     firstName: string
     email: string
     bankDetails: {
@@ -16,8 +17,8 @@ interface CreateSplitData {
   tasks: {
     taskName: string
     amount: number
-    responsiblePeople: {
-      personId: string
+    people: {
+      id: string
       amount: number
     }[]
   }[]
@@ -29,10 +30,6 @@ export type CreateSplitState = {
   // UI state
   showBankDetails: boolean
   setShowBankDetails: (show: boolean) => void
-  showToast: boolean
-  setShowToast: (show: boolean) => void
-  addedPersonName: string
-  setAddedPersonName: (name: string) => void
   isFormSubmitted: boolean
   setIsFormSubmitted: (isSubmitted: boolean) => void
 }
@@ -51,10 +48,6 @@ export const useCreateSplit = create<CreateSplitState>()(
     // UI state
     showBankDetails: false,
     setShowBankDetails: (show) => set({ showBankDetails: show }),
-    showToast: false,
-    setShowToast: (show) => set({ showToast: show }),
-    addedPersonName: '',
-    setAddedPersonName: (name) => set({ addedPersonName: name }),
     isFormSubmitted: false,
     setIsFormSubmitted: (isSubmitted) => set({ isFormSubmitted: isSubmitted }),
   }))
