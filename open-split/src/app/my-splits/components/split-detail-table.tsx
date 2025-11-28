@@ -1,18 +1,18 @@
-import { FilledButton } from '@/components/ui/common/filled-button'
 import { useNavigate } from '@tanstack/react-router'
-import { Handshake } from 'lucide-react'
 
 interface Person {
   id: string
   name: string
   status: 'fully-settled' | 'unsettled' | 'partially-settled'
+  amountPaid: number
+  amountToPay: number
 }
 
 const people: Person[] = [
-  { id: '1', name: 'Tharindu Epasingha', status: 'fully-settled' },
-  { id: '2', name: 'John Doe', status: 'unsettled' },
-  { id: '3', name: 'Jane Smith', status: 'fully-settled' },
-  { id: '4', name: 'Mike Wilson', status: 'partially-settled' },
+  { id: '1', name: 'Tharindu Epasingha', status: 'fully-settled', amountPaid: 10000, amountToPay: 0 },
+  { id: '2', name: 'John Doe', status: 'unsettled', amountPaid: 0, amountToPay: 10000 },
+  { id: '3', name: 'Jane Smith', status: 'fully-settled', amountPaid: 10000, amountToPay: 0 },
+  { id: '4', name: 'Mike Wilson', status: 'partially-settled', amountPaid: 5000, amountToPay: 5000 },
 ]
 
 const getStatusLabel = (status: string): string => {
@@ -41,6 +41,20 @@ const getStatusBadgeClasses = (status: string): string => {
   }
 }
 
+// Background colors based on payment status
+const getStatusBgColor = (status: string): string => {
+  switch (status) {
+    case 'fully-settled':
+      return 'bg-green-100' // Green
+    case 'unsettled':
+      return 'bg-red-100' // Red
+    case 'partially-settled':
+      return 'bg-yellow-100' // Yellow
+    default:
+      return 'bg-gray-100' // Gray
+  }
+}
+
 export default function SplitDetailTable() {
   const navigate = useNavigate()
   const handleViewPerson = (personName: string) => {
@@ -51,58 +65,47 @@ export default function SplitDetailTable() {
         payerName: personName,
       },
     })
-    // Handle viewing person details
   }
 
   return (
-    <div className="relative overflow-x-auto bg-background-default shadow-xs rounded-base border border-default">
-      <table className="w-full text-sm text-left rtl:text-right text-body">
-        <caption className="p-5 text-lg font-medium text-left rtl:text-right text-heading">
+    <div>
+      <div className="mb-6">
+        <h2 className="text-lg font-medium text-heading mb-2">
           Split Details
-          <p className="mt-1.5 text-sm font-normal text-body">Please select your name and settle the pending amount.</p>
-        </caption>
-        <thead className="text-sm text-body bg-neutral-secondary-medium border-b border-t border-default-medium">
-          <tr>
-            <th scope="col" className="px-6 py-3 font-medium">
-              Name
-            </th>
-            <th scope="col" className="px-6 py-3 font-medium">
-              Status
-            </th>
-            <th scope="col" className="px-6 py-3 font-medium">
-              <span className="sr-only">Action</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {people.map((person, index) => (
-            <tr
+        </h2>
+        <p className="text-sm font-normal text-body">
+          Please select your name and settle the pending amount.
+        </p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {people.map((person) => {
+          const bgColor = getStatusBgColor(person.status)
+          return (
+            <div
               key={person.id}
-              className={`bg-neutral-primary-soft ${
-                index !== people.length - 1 ? 'border-b border-default' : ''
-              }`}
+              onClick={() => handleViewPerson(person.name)}
+              className={`${bgColor} rounded-2xl border-2 border-gray-800 p-6 flex flex-col justify-between min-h-40 cursor-pointer hover:shadow-lg transition-shadow`}
             >
-              <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap">
-                {person.name}
-              </th>
-              <td className="px-6 py-4">
-                <span className={getStatusBadgeClasses(person.status)}>
-                  {getStatusLabel(person.status)}
-                </span>
-              </td>
-              <td className="px-6 py-4 text-right">
-                <FilledButton
-                  size="small"
-                  startIcon={<Handshake size={16} />}
-                  onClick={() => handleViewPerson(person.name)}
-                >
-                  Settle Debts
-                </FilledButton>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <h2 className="text-3xl font-bold mb-2">{person.name}</h2>
+                  <span className={getStatusBadgeClasses(person.status)}>
+                    {getStatusLabel(person.status)}
+                  </span>
+                  <div className="mt-4 space-y-2">
+                    <p className="text-lg font-semibold">
+                      Paid: ${person.amountPaid.toLocaleString()}
+                    </p>
+                    <p className="text-lg font-semibold">
+                      Due: ${person.amountToPay.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

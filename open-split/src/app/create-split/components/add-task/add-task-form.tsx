@@ -21,8 +21,13 @@ import { PlusIcon, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { useCreateSplit } from '../../state/use-create-split'
+import { TaskChip } from './task-chip'
 
-export default function AddTaskForm() {
+interface AddTaskFormProps {
+  onDeleteTask: (taskName: string) => void
+}
+
+export default function AddTaskForm({ onDeleteTask }: AddTaskFormProps) {
   const [multiplePeople, setMultiplePeople] = useState(false)
   const { createSplitData, setCreateSplitData } = useCreateSplit()
   const { start: startLoading, complete: completeLoading } = useLoadingBar()
@@ -74,14 +79,30 @@ export default function AddTaskForm() {
   )
 
   return (
-    <Box
-      className="mt-12"
-      sx={{
-        pb: 4,
-        maxWidth: { xs: '100%', sm: '400px' },
-        width: '100%',
-      }}
-    >
+    <Box className="mt-12 pb-4">
+      <Typography variant="h6" sx={{ mb: 2 }}>
+        Add Tasks
+      </Typography>
+      {createSplitData.tasks && createSplitData.tasks.length > 0 && (
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: 1,
+            mb: 2,
+          }}
+        >
+          {createSplitData.tasks.map((task, index) => (
+            <TaskChip
+              key={index}
+              taskName={task.taskName}
+              amount={task.amount}
+              people={task.people}
+              onDelete={onDeleteTask}
+            />
+          ))}
+        </Box>
+      )}
       <form
         onSubmit={(e) => {
           e.preventDefault()

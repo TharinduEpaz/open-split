@@ -10,6 +10,7 @@ import AddPeople from './components/add-people/add-people'
 import AddTask from './components/add-task/add-task'
 import { GenerateLink } from './components/generate-link/generate-link'
 import useSplitAlgorithm from './hooks/use-split-algo'
+import { OutlinedButton } from '@/components/ui/common/outlined-button'
 
 const steps = ['Add People', 'Add Tasks', 'Generate Link']
 
@@ -82,7 +83,7 @@ export default function CreateSplitStepper() {
   }
 
   return (
-    <Box sx={{ width: '100%', height: '100%' }}>
+    <Box sx={{ width: '100%', height: '100%', pb: 4 }}>
       <Stepper activeStep={activeStep}>
         {steps.map((label, index) => {
           const stepProps: { completed?: boolean } = {}
@@ -119,23 +120,23 @@ export default function CreateSplitStepper() {
           <Box>{_renderStepContent(activeStep)}</Box>
 
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-            <Button
+            <OutlinedButton
               color="inherit"
               disabled={activeStep === 0}
               onClick={handleBack}
               sx={{ mr: 1 }}
             >
               Back
-            </Button>
+            </OutlinedButton>
             <Box sx={{ flex: '1 1 auto' }} />
             {isStepOptional(activeStep) && (
-              <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
+              <OutlinedButton color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
                 Skip
-              </Button>
+              </OutlinedButton>
             )}
-             <Button onClick={handleNext}>
+             <OutlinedButton onClick={handleNext}>
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-            </Button>
+            </OutlinedButton>
  {/* <Button onClick={handleNext} disabled={isNextButtonDisabled}>
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button> */}

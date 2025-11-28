@@ -1,18 +1,21 @@
-import { OutlinedButton } from '@/components/ui/common/outlined-button'
 import { useNavigate } from '@tanstack/react-router'
-import { KanbanSquare } from 'lucide-react'
 
 interface Split {
   id: string
   name: string
   date: string
+  amount: number
+  totalOwe: number
+  bgColor: string
+  icon: string
 }
 
 const splits: Split[] = [
-  { id: '1', name: 'Weekend Trip to Bali', date: '2024-11-01' },
-  { id: '2', name: 'Office Lunch', date: '2024-11-03' },
-  { id: '3', name: 'Movie Night', date: '2024-11-05' },
-  { id: '4', name: 'Camping Adventure', date: '2024-11-07' },
+  { id: '1', name: 'La Luna Dinner', date: '2024-11-01', amount: 40000, totalOwe: 1000, bgColor: 'bg-pink-100', icon: '→' },
+  { id: '2', name: 'Keels Shopping', date: '2024-11-03', amount: 40000, totalOwe: 1000, bgColor: 'bg-yellow-50', icon: '→' },
+  { id: '3', name: 'Arakku', date: '2024-11-05', amount: 40000, totalOwe: 1000, bgColor: 'bg-purple-100', icon: '→' },
+  { id: '4', name: 'Party', date: '2024-11-07', amount: 40000, totalOwe: 1000, bgColor: 'bg-blue-100', icon: '→' },
+  { id: '5', name: 'Yogeshwari', date: '2024-11-09', amount: 40000, totalOwe: 1000, bgColor: 'bg-green-100', icon: '→' },
 ]
 
 export default function MySplitsTable() {
@@ -23,52 +26,23 @@ export default function MySplitsTable() {
   }
 
   return (
-    <div className="relative overflow-x-auto bg-background-default shadow-xs rounded-base border border-default">
-      <table className="w-full text-sm text-left rtl:text-right text-body">
-        <caption className="p-5 text-lg font-medium text-left rtl:text-right text-heading">
-          My Splits
-          <p className="mt-1.5 text-sm font-normal text-body">Browse a list of your expense splits. View details and manage your shared expenses.</p>
-        </caption>
-        <thead className="text-sm text-body bg-neutral-secondary-medium border-b border-t border-default-medium">
-          <tr>
-            <th scope="col" className="px-6 py-3 font-medium">
-              Split Name
-            </th>
-            <th scope="col" className="px-6 py-3 font-medium">
-              Date
-            </th>
-            <th scope="col" className="px-6 py-3 font-medium">
-              <span className="sr-only">Action</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {splits.map((split, index) => (
-            <tr
-              key={split.id}
-              className={`bg-neutral-primary-soft ${
-                index !== splits.length - 1 ? 'border-b border-default' : ''
-              }`}
-            >
-              <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap">
-                {split.name}
-              </th>
-              <td className="px-6 py-4">
-                {split.date}
-              </td>
-              <td className="px-6 py-4 text-right">
-                <OutlinedButton 
-                  size="small"
-                  startIcon={<KanbanSquare size={16} />}
-                  onClick={() => handleViewSplit(split.id)}
-                >
-                  View Split Details
-                </OutlinedButton>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {splits.map((split) => (
+        <div
+          key={split.id}
+          onClick={() => handleViewSplit(split.id)}
+          className={`${split.bgColor} rounded-2xl border-2 border-gray-800 p-6 flex flex-col justify-between min-h-40 cursor-pointer hover:shadow-lg transition-shadow`}
+        >
+          <div className="flex justify-between items-start">
+            <div>
+              <h2 className="text-3xl font-bold mb-2">{split.name}</h2>
+              <p className="text-lg font-semibold mb-2">$ {split.amount.toLocaleString()}</p>
+              <p className="text-red-400 font-semibold">Total owe ${split.totalOwe.toLocaleString()}</p>
+            </div>
+            <div className="text-3xl font-bold text-gray-800">{split.icon}</div>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

@@ -15,8 +15,13 @@ import { toast } from 'sonner'
 import { useCreateSplit } from '../../state/use-create-split'
 import { useLoadingBar } from '@/hooks/use-loading-bar'
 import { useEffect } from 'react'
+import { PeopleChip } from './people-chip'
 
-export default function AddPeopleForm() {
+interface AddPeopleFormProps {
+  onDeletePerson: (personId: string) => void
+}
+
+export default function AddPeopleForm({ onDeletePerson }: AddPeopleFormProps) {
   const {
     setCreateSplitData,
     createSplitData,
@@ -79,12 +84,7 @@ export default function AddPeopleForm() {
 
   return (
     <Box
-      className="mt-12"
-      sx={{
-        pb: 4,
-        maxWidth: { xs: '100%', sm: '400px' },
-        width: '100%',
-      }}
+      className="mt-12 pb-4"
     >
       {/* Split Name Section */}
       <Box sx={{ mb: 4, pb: 3, borderBottom: '1px solid #e5e7eb' }}>
@@ -162,6 +162,27 @@ export default function AddPeopleForm() {
         <Typography variant="h6" sx={{ mb: 2 }}>
           Add People
         </Typography>
+        {createSplitData.people && createSplitData.people.length > 0 && (
+          <Box
+            sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 1,
+              mb: 2,
+            }}
+          >
+            {createSplitData.people.map((person) => (
+              <PeopleChip
+                key={person.id}
+                id={person.id}
+                name={person.firstName}
+                email={person.email}
+                bankDetails={person.bankDetails}
+                onDelete={onDeletePerson}
+              />
+            ))}
+          </Box>
+        )}
         <form
           onSubmit={(e) => {
             e.preventDefault()
