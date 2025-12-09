@@ -11,16 +11,17 @@ import AddTask from './components/add-task/add-task'
 import { GenerateLink } from './components/generate-link/generate-link'
 import useSplitAlgorithm from './hooks/use-split-algo'
 import { OutlinedButton } from '@/components/ui/common/outlined-button'
+import { useCreateSplit } from './state/use-create-split'
 
 const steps = ['Add People', 'Add Tasks', 'Generate Link']
 
 export default function CreateSplitStepper() {
   const [activeStep, setActiveStep] = React.useState(0)
   const [skipped, setSkipped] = React.useState(new Set<number>())
-  // const { isFormSubmitted : isAddPeopleFormSubmitted } = useCreateSplit()
+  const {createSplitData} = useCreateSplit()
   const { validateTask } = useSplitAlgorithm()
 
-  // const isNextButtonDisabled = !isAddPeopleFormSubmitted
+  const isNextButtonDisabled = !createSplitData.splitName || createSplitData.people.length === 0
 
   const isStepOptional = (step: number) => {
     return step === 99999
@@ -34,8 +35,11 @@ export default function CreateSplitStepper() {
     if (activeStep === 1) {
       const validationResult = validateTask()
       if (!validationResult.isValid) {
-        toast.error(validationResult.errors.join('\n'),{duration: 10000, position: 'top-right'})
-        return;
+        toast.error(validationResult.errors.join('\n'), {
+          duration: 10000,
+          position: 'top-right',
+        })
+        return
       }
     }
     let newSkipped = skipped
@@ -134,12 +138,10 @@ export default function CreateSplitStepper() {
                 Skip
               </OutlinedButton>
             )}
-             <OutlinedButton onClick={handleNext}>
+             <OutlinedButton onClick={handleNext} disabled={isNextButtonDisabled}>
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </OutlinedButton>
- {/* <Button onClick={handleNext} disabled={isNextButtonDisabled}>
-              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-            </Button> */}
+
           </Box>
         </React.Fragment>
       )}

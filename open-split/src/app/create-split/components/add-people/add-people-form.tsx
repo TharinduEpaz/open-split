@@ -1,5 +1,6 @@
 import { FieldInfo } from '@/components/form/field-info'
 import { FilledButton } from '@/components/ui/common/filled-button'
+import { useLoadingBar } from '@/hooks/use-loading-bar'
 import {
   Box,
   FormControlLabel,
@@ -11,10 +12,9 @@ import {
 import type { AnyFieldApi } from '@tanstack/react-form'
 import { useForm } from '@tanstack/react-form'
 import { PlusIcon } from 'lucide-react'
+import { useEffect } from 'react'
 import { toast } from 'sonner'
 import { useCreateSplit } from '../../state/use-create-split'
-import { useLoadingBar } from '@/hooks/use-loading-bar'
-import { useEffect } from 'react'
 import { PeopleChip } from './people-chip'
 
 interface AddPeopleFormProps {
