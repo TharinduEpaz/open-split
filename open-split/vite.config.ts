@@ -17,4 +17,18 @@ export default defineConfig({
       '@': resolve(__dirname, './src'),
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: process.env.VITE_API_BASE_URL || 'http://127.0.0.1:3000',
+        changeOrigin: true,
+        secure: false,
+        // Rewrite /api/generate-link to /api/v1/create-split
+        rewrite: (path) => {
+          // Keep other /api paths as-is (they might be /api/v1/...)
+          return path
+        },
+      },
+    },
+  },
 })

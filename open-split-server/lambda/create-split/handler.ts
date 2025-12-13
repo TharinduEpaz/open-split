@@ -1,44 +1,35 @@
+import { response } from './utils/response';
+import { createSplit } from './handlers/create-split';
+import { getSplit } from './handlers/get-split';
+import { updateSplit } from './handlers/update-split';
+import { ApiGatewayEvent } from './utils/types';
 
+export const handle = async (event: ApiGatewayEvent) => {
+  const { httpMethod, resource } = event;
 
-type ApiResponseBody = Record<string, unknown>;
+  try {
+    // Route: POST /api/v1/create-split
+    if (resource === "/api/v1/create-split" && httpMethod === "POST") {
+      return await createSplit(event);
+    }
 
-const response = (statusCode: number, body: ApiResponseBody) => ({
-  statusCode,
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(body),
-});
+    // Route: GET /api/v1/splits/{splitId}
+    if (resource === "/api/v1/splits/{splitId}" && httpMethod === "GET") {
+      return await getSplit(event);
+    }
 
-export const handle = async (event: any) => {
-  const { httpMethod, resource, pathParameters, body } = event;
+    // Route: PUT /api/v1/splits/{splitId}
+    if (resource === "/api/v1/splits/{splitId}" && httpMethod === "PUT") {
+      return await updateSplit(event);
+    }
 
-  if (resource === "/api/v1/create-split" && httpMethod === "POST") {
-    const parsedBody = body ? JSON.parse(body) : {};
-    return response(201, {
-      message: "Split created (dummy response)",
-      requestBody: parsedBody,
+    // Route not found
+    return response(404, { message: "Route not implemented" });
+  } catch (error) {
+    console.error('Error processing request:', error);
+    return response(500, {
+      message: "Internal server error",
+      error: error instanceof Error ? error.message : "Unknown error",
     });
   }
-
-  if (resource === "/api/v1/splits/{splitId}" && httpMethod === "GET") {
-    return response(200, {
-      splitId: pathParameters?.splitId ?? "unknown",
-      message: "Split retrieved (dummy response)",
-      split: {
-        status: "OPEN",
-        createdAt: new Date().toISOString(),
-        link: "https://example.com/split/demo",
-      },
-    });
-  }
-
-  if (resource === "/api/v1/splits/{splitId}" && httpMethod === "PUT") {
-    const parsedBody = body ? JSON.parse(body) : {};
-    return response(200, {
-      splitId: pathParameters?.splitId ?? "unknown",
-      message: "Split updated (dummy response)",
-      updates: parsedBody,
-    });
-  }
-
-  return response(404, { message: "Route not implemented" });
 };
