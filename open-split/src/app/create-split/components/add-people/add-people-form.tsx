@@ -31,21 +31,6 @@ export default function AddPeopleForm({ onDeletePerson }: AddPeopleFormProps) {
   } = useCreateSplit()
   const { start: startLoading, complete: completeLoading } = useLoadingBar()
 
-  // Compute splitNameSubmitted from store
-  const splitNameSubmitted = !!createSplitData.splitName
-
-  // Form for split name (one-time submit)
-  const splitNameForm = useForm({
-    defaultValues: {
-      splitName: createSplitData.splitName || '',
-    },
-    onSubmit: async ({ value }) => {
-      setCreateSplitData({
-        splitName: value.splitName,
-      })
-    },
-  })
-
   // Form for people info (can submit multiple times)
   const peopleForm = useForm({
     defaultValues: {
@@ -77,86 +62,15 @@ export default function AddPeopleForm({ onDeletePerson }: AddPeopleFormProps) {
   })
 
   useEffect(() => {
-    if (splitNameForm.state.isSubmitted && peopleForm.state.isSubmitted) {
+    if (peopleForm.state.isSubmitted) {
       setIsFormSubmitted(true)
     }
-  }, [splitNameForm.state.isSubmitted, peopleForm.state.isSubmitted])
+  }, [peopleForm.state.isSubmitted, setIsFormSubmitted])
 
   return (
     <Box
       className="mt-12 pb-4"
     >
-      {/* Split Name Section */}
-      <Box sx={{ mb: 4, pb: 3, borderBottom: '1px solid #e5e7eb' }}>
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          Split Name
-        </Typography>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            splitNameForm.handleSubmit()
-          }}
-        >
-          <Box sx={{ mb: 2 }}>
-            <splitNameForm.Field
-              name="splitName"
-              validators={{
-                onChange: ({ value }) =>
-                  !value
-                    ? 'Split name is required'
-                    : value.length < 3
-                      ? 'Split name must be at least 3 characters'
-                      : undefined,
-              }}
-              children={({ state, handleChange, handleBlur }) => {
-                return (
-                  <Box>
-                    <TextField
-                      id="splitName"
-                      label="Split Name"
-                      variant="standard"
-                      fullWidth
-                      value={state.value}
-                      onChange={(e) => handleChange(e.target.value)}
-                      onBlur={handleBlur}
-                      error={state.meta.isTouched && !state.meta.isValid}
-                      placeholder="e.g., Weekend Trip to Bali"
-                      disabled={splitNameSubmitted}
-                    />
-                    <FieldInfo
-                      field={
-                        {
-                          state,
-                          handleChange,
-                          handleBlur,
-                          name: 'splitName',
-                        } as AnyFieldApi
-                      }
-                    />
-                  </Box>
-                )
-              }}
-            />
-          </Box>
-          {!splitNameSubmitted && (
-            <splitNameForm.Subscribe
-              selector={(state) => [state.canSubmit, state.isSubmitting]}
-              children={([canSubmit, isSubmitting]) => (
-                <FilledButton type="submit" disabled={!canSubmit}>
-                  {isSubmitting ? 'Saving...' : 'Save Split Name'}
-                </FilledButton>
-              )}
-            />
-          )}
-          {splitNameSubmitted && (
-            <Typography variant="body2" color="success.main">
-              ✓ Split name saved
-            </Typography>
-          )}
-        </form>
-      </Box>
-
       {/* People Info Section */}
       <Box>
         <Typography variant="h6" sx={{ mb: 2 }}>

@@ -21,7 +21,7 @@ function App() {
           <Box sx={{ mb: 6 }}>
             <SplitTitle >Welcome to open split</SplitTitle>
             <SplitSubtitle>
-              Easily create fund splits with your friends
+            Easily create and share splits with your friends, without the hassle of login and setups.
             </SplitSubtitle>
           </Box>
 

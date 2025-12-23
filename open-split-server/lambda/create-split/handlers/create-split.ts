@@ -1,8 +1,6 @@
 import { response } from '../utils/response';
 import { ApiGatewayEvent, CreateSplitRequest } from '../utils/types';
 
-
-
 export const createSplit = async (event: ApiGatewayEvent) => {
   const { body } = event;
   

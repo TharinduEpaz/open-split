@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 import AddPeople from './components/add-people/add-people'
 import AddTask from './components/add-task/add-task'
 import { GenerateLink } from './components/generate-link/generate-link'
+import SplitNameDialog from './components/add-people/split-name-dialog'
 import useSplitAlgorithm from './hooks/use-split-algo'
 import { useCreateSplit } from './state/use-create-split'
 import { OutlinedButton } from '@/components/ui/common/outlined-button'
@@ -89,6 +90,7 @@ export default function CreateSplitStepper() {
 
   return (
     <Box sx={{ width: '100%', height: '100%', pb: 4 }}>
+      <SplitNameDialog />
       <Stepper activeStep={activeStep}>
         {steps.map((label, index) => {
           const stepProps: { completed?: boolean } = {}
